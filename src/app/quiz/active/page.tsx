@@ -240,6 +240,10 @@ function ActiveQuizContent() {
                   </div>
                   <div className="text-base leading-relaxed text-foreground/80 italic font-medium pt-2">
                     <MathText text={currentQuestion.explanation} />
+                    <div className="mt-4 space-y-2 not-italic text-sm leading-relaxed text-foreground/75">
+                      <p>Key takeaway: focus on the governing rule before doing arithmetic so each step stays valid.</p>
+                      <p>Checkpoint: quickly verify domain, sign, units, and substitution at the end to avoid common mistakes.</p>
+                    </div>
                   </div>
                 </div>
 
