@@ -30,6 +30,8 @@ export function MathText({ text, className, displayMode = false }: MathTextProps
           try {
             const html = katex.renderToString(content, {
               throwOnError: false,
+              strict: "ignore",
+              errorColor: "currentColor",
               displayMode: displayMode,
             });
             return (
