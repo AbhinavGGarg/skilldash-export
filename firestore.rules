@@ -1,0 +1,148 @@
+/**
+ * # SkillDash Security Rules
+ * 
+ * ## Core Philosophy
+ * This ruleset implements a strict "Authorization Independence" model. Access to sensitive user 
+ * data is primarily governed by the document's location in the hierarchy. By nesting personal 
+ * data under a user-specific path (`/users/{userId}`), we establish clear ownership that can 
+ * be verified without expensive cross-document lookups.
+ * 
+ * ## Data Structure
+ * - **Public Data**: Academic `subjects`, `questions`, and `options` are stored in top-level 
+ *   collections and are readable by all users to facilitate quiz participation.
+ * - **Private User Data**: All user-specific content, including `UserProfile`, `QuizSessions`, 
+ *   `QuizAttempts`, and `FavoriteQuestions`, is located under the `/users/{userId}` prefix.
+ * 
+ * ## Key Security Decisions
+ * - **Ownership-Based Writes**: Only the authenticated user whose `uid` matches the `{userId}` 
+ *   parameter in the path can create, read, update, or delete their personal data.
+ * - **Immutable Relational Fields**: Critical fields used for authorization (like `userId` or 
+ *   `id` on a profile) are enforced to match the path on creation and are immutable thereafter.
+ * - **Public Read-Only Content**: Questions and subjects are public for reading but strictly 
+ *   locked down for writes, intended to be managed by administrative processes or backend services.
+ * - **Flexible Prototyping**: While authorization is strictly enforced, the specific shape and 
+ *   data types of non-relational fields are not restricted to allow for rapid frontend iteration.
+ * 
+ * ## Denormalization for Authorization
+ * To ensure performant rules, ownership identifiers (like `userId`) are included directly 
+ * within user-owned documents. This allows rules to verify that the data being written 
+ * matches the authenticated user's identity and the path context simultaneously.
+ */
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- Helper Functions ---
+
+    /** Checks if the request is from an authenticated user. */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /** Checks if the authenticated user's UID matches the provided userId. */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /** Checks if the user is the owner and the document already exists for updates/deletes. */
+    function isExistingOwner(userId) {
+      return resource != null && isOwner(userId);
+    }
+
+    // --- Collection Rules ---
+
+    /**
+     * @description Rules for the primary user profile document.
+     * @path /users/{userId}
+     * @allow (create) if the auth UID matches the document ID and the data's ID.
+     * @deny (update) if attempting to change the document's internal ID.
+     * @principle Ownership: Users manage their own profiles; ID consistency is enforced.
+     */
+    match /users/{userId} {
+      allow get, list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+
+      /**
+       * @description Records of specific quiz sessions initiated by the user.
+       * @path /users/{userId}/quizSessions/{quizSessionId}
+       * @allow (list) if the user is the owner of the parent path.
+       * @deny (create) if the internal 'userId' field does not match the path.
+       * @principle Relational Integrity: Enforces that user sessions belong to the user in the path.
+       */
+      match /quizSessions/{quizSessionId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && request.resource.data.userId == userId;
+        allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+        allow delete: if isExistingOwner(userId);
+
+        /**
+         * @description Individual question attempts within a specific quiz session.
+         * @path /users/{userId}/quizSessions/{quizSessionId}/quizAttempts/{quizAttemptId}
+         * @allow (get) if the user owns the parent session.
+         * @deny (update) if the document does not exist.
+         * @principle Deep Nesting: Ownership is inherited from the top-level user ID in the path.
+         */
+        match /quizAttempts/{quizAttemptId} {
+          allow get, list: if isOwner(userId);
+          allow create: if isOwner(userId);
+          allow update, delete: if isExistingOwner(userId);
+        }
+      }
+
+      /**
+       * @description Junction collection linking users to their favorite questions.
+       * @path /users/{userId}/favoriteQuestions/{favoriteQuestionId}
+       * @allow (create) if the data's 'userId' matches the path.
+       * @deny (create) if a user tries to favorite a question for someone else.
+       * @principle Ownership: Users only manage their own list of favorites.
+       */
+      match /favoriteQuestions/{favoriteQuestionId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && request.resource.data.userId == userId;
+        allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+        allow delete: if isExistingOwner(userId);
+      }
+    }
+
+    /**
+     * @description Publicly accessible academic subjects.
+     * @path /subjects/{subjectId}
+     * @allow (get, list) for any user (public).
+     * @deny (write) for all client requests.
+     * @principle Public Read: Content is globally viewable but protected from client modification.
+     */
+    match /subjects/{subjectId} {
+      allow get, list: if true;
+      // CRITICAL: Cannot implement owner-only writes. The 'Subject' entity is missing an ownership field.
+      allow create, update, delete: if false; // TODO: Add admin validation once an RBAC system is established.
+    }
+
+    /**
+     * @description Publicly accessible practice questions.
+     * @path /questions/{questionId}
+     * @allow (get, list) for any user (public).
+     * @deny (write) for all client requests.
+     * @principle Public Read: Questions are viewable for quiz taking but restricted for editing.
+     */
+    match /questions/{questionId} {
+      allow get, list: if true;
+      // CRITICAL: Cannot implement owner-only writes. The 'Question' entity is missing an ownership field.
+      allow create, update, delete: if false; // TODO: Add admin/author validation.
+
+      /**
+       * @description Answer options for a specific question.
+       * @path /questions/{questionId}/options/{optionId}
+       * @allow (get, list) for any user (public).
+       * @deny (write) for all client requests.
+       * @principle Structural Segregation: Options are nested but inherit the public read posture of questions.
+       */
+      match /options/{optionId} {
+        allow get, list: if true;
+        allow create, update, delete: if false;
+      }
+    }
+  }
+}

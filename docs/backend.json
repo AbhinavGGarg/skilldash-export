@@ -1,0 +1,431 @@
+{
+  "entities": {
+    "UserProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserProfile",
+      "type": "object",
+      "description": "Stores application-specific user data and preferences, linked to an external authentication system. This entity complements external authentication by holding data relevant to SkillDash's features, such as progress tracking and personalization.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the UserProfile entity, typically provided by an external authentication system."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "The user's chosen display name or alias within the application."
+        },
+        "email": {
+          "type": "string",
+          "description": "The user's email address, primarily for communication and identification purposes within the app, not for authentication credentials.",
+          "format": "email"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the user profile was initially created.",
+          "format": "date-time"
+        },
+        "lastLoginAt": {
+          "type": "string",
+          "description": "Timestamp indicating the user's most recent login to the application.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "displayName",
+        "email",
+        "createdAt",
+        "lastLoginAt"
+      ]
+    },
+    "Subject": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Subject",
+      "type": "object",
+      "description": "Defines academic subjects or categories under which quizzes and questions are organized, allowing users to select their practice focus.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Subject entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the subject, e.g., 'Math', 'Reading', 'Science'."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description or overview of the subject content."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description"
+      ]
+    },
+    "Question": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Question",
+      "type": "object",
+      "description": "Represents a single practice question, including its text, designated difficulty, explanation, and a reference to its answer options.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Question entity."
+        },
+        "subjectId": {
+          "type": "string",
+          "description": "Reference to the Subject this question belongs to. (Relationship: Subject 1:N Question)"
+        },
+        "difficultyLevel": {
+          "type": "string",
+          "description": "The designated difficulty level of the question (e.g., 'Easy', 'Medium', 'Hard')."
+        },
+        "questionText": {
+          "type": "string",
+          "description": "The main text or prompt of the question."
+        },
+        "questionType": {
+          "type": "string",
+          "description": "The format of the question (e.g., 'multiple-choice', 'free-response')."
+        },
+        "explanation": {
+          "type": "string",
+          "description": "A detailed explanation of the correct answer, possibly AI-generated, provided after a user attempts the question."
+        },
+        "hint": {
+          "type": "string",
+          "description": "An optional hint available to the user for assistance with the question."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the question was added to the question bank.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp indicating the last time the question's content was updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "subjectId",
+        "difficultyLevel",
+        "questionText",
+        "questionType",
+        "explanation",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Option": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Option",
+      "type": "object",
+      "description": "Represents a single answer choice for a multiple-choice question, specifying its text and correctness.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Option entity."
+        },
+        "questionId": {
+          "type": "string",
+          "description": "Reference to the Question this option belongs to. (Relationship: Question 1:N Option)"
+        },
+        "optionText": {
+          "type": "string",
+          "description": "The text content of the answer option presented to the user."
+        },
+        "isCorrect": {
+          "type": "boolean",
+          "description": "Indicates whether this option is the correct answer for the associated question."
+        }
+      },
+      "required": [
+        "id",
+        "questionId",
+        "optionText",
+        "isCorrect"
+      ]
+    },
+    "QuizSession": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "QuizSession",
+      "type": "object",
+      "description": "Tracks a specific instance of a user taking a mini-quiz, recording overall results, configuration, and session status.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the QuizSession entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the UserProfile who initiated this quiz session. (Relationship: UserProfile 1:N QuizSession)"
+        },
+        "subjectId": {
+          "type": "string",
+          "description": "Reference to the Subject the quiz focused on. (Relationship: Subject 1:N QuizSession)"
+        },
+        "difficultyLevel": {
+          "type": "string",
+          "description": "The difficulty level selected by the user for this quiz session."
+        },
+        "startTime": {
+          "type": "string",
+          "description": "Timestamp marking when the quiz session began.",
+          "format": "date-time"
+        },
+        "endTime": {
+          "type": "string",
+          "description": "Timestamp marking when the quiz session ended or was abandoned."
+        },
+        "score": {
+          "type": "number",
+          "description": "The percentage score achieved in this quiz session (e.g., 80 for 80%)."
+        },
+        "correctCount": {
+          "type": "number",
+          "description": "The number of questions answered correctly in this quiz session."
+        },
+        "totalQuestions": {
+          "type": "number",
+          "description": "The total number of questions presented in this quiz session."
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of the quiz session (e.g., 'in-progress', 'completed', 'abandoned')."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "subjectId",
+        "difficultyLevel",
+        "startTime",
+        "score",
+        "correctCount",
+        "totalQuestions",
+        "status"
+      ]
+    },
+    "QuizAttempt": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "QuizAttempt",
+      "type": "object",
+      "description": "Records a user's specific interaction with a single question within a quiz session, including their answer, correctness, and feedback status.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the QuizAttempt entity."
+        },
+        "quizSessionId": {
+          "type": "string",
+          "description": "Reference to the QuizSession this attempt belongs to. (Relationship: QuizSession 1:N QuizAttempt)"
+        },
+        "questionId": {
+          "type": "string",
+          "description": "Reference to the Question that was attempted in this entry. (Relationship: Question 1:N QuizAttempt)"
+        },
+        "userAnswerText": {
+          "type": "string",
+          "description": "The text of the answer chosen or provided by the user for this question."
+        },
+        "isCorrect": {
+          "type": "boolean",
+          "description": "Indicates whether the user's answer for this attempt was correct."
+        },
+        "feedbackProvided": {
+          "type": "boolean",
+          "description": "Flag indicating if detailed explanation/feedback has been provided to the user for this specific attempt."
+        },
+        "timeTakenSeconds": {
+          "type": "number",
+          "description": "Optional. The time (in seconds) the user spent on this particular question before submitting an answer."
+        }
+      },
+      "required": [
+        "id",
+        "quizSessionId",
+        "questionId",
+        "userAnswerText",
+        "isCorrect",
+        "feedbackProvided"
+      ]
+    },
+    "FavoriteQuestion": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "FavoriteQuestion",
+      "type": "object",
+      "description": "Links a UserProfile to a Question they have marked as a favorite, allowing for personalized review and access to preferred questions.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the FavoriteQuestion entity, representing a user's favorite mark."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the UserProfile who favorited the question. (Relationship: UserProfile 1:N FavoriteQuestion)"
+        },
+        "questionId": {
+          "type": "string",
+          "description": "Reference to the Question that was marked as favorite. (Relationship: Question 1:N FavoriteQuestion)"
+        },
+        "favoritedAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the question was marked as favorite by the user.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "questionId",
+        "favoritedAt"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "UserProfile",
+          "schema": {
+            "$ref": "#/backend/entities/UserProfile"
+          },
+          "description": "Stores user profiles, directly owned by the authenticated user. The userId in the path serves as the document ID and explicitly defines ownership for authorization independence.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user, matching Firebase Authentication UID."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/subjects/{subjectId}",
+        "definition": {
+          "entityName": "Subject",
+          "schema": {
+            "$ref": "#/backend/entities/Subject"
+          },
+          "description": "Publicly accessible collection for all academic subjects. No specific user authorization required for read access. Write access should be restricted to administrators or backend services.",
+          "params": [
+            {
+              "name": "subjectId",
+              "description": "The unique identifier for a specific subject."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/questions/{questionId}",
+        "definition": {
+          "entityName": "Question",
+          "schema": {
+            "$ref": "#/backend/entities/Question"
+          },
+          "description": "Publicly accessible collection for all practice questions across various subjects. No specific user authorization required for read access during a quiz. Write access should be restricted to administrators or backend services.",
+          "params": [
+            {
+              "name": "questionId",
+              "description": "The unique identifier for a specific question."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/questions/{questionId}/options/{optionId}",
+        "definition": {
+          "entityName": "Option",
+          "schema": {
+            "$ref": "#/backend/entities/Option"
+          },
+          "description": "Subcollection of options for a given question. Publicly accessible for display during quizzes. The 'isCorrect' field implies a need for careful client-side handling or server-side validation to prevent cheating, as direct client read access to 'isCorrect' would expose the answer.",
+          "params": [
+            {
+              "name": "questionId",
+              "description": "The unique identifier of the parent question."
+            },
+            {
+              "name": "optionId",
+              "description": "The unique identifier for a specific answer option."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/quizSessions/{quizSessionId}",
+        "definition": {
+          "entityName": "QuizSession",
+          "schema": {
+            "$ref": "#/backend/entities/QuizSession"
+          },
+          "description": "Records individual quiz sessions for a user. Access is restricted to the owning userId in the path, ensuring authorization independence. Includes denormalized 'subjectId' and 'difficultyLevel' for querying and clarity.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user who owns this quiz session."
+            },
+            {
+              "name": "quizSessionId",
+              "description": "The unique identifier for a specific quiz session."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/quizSessions/{quizSessionId}/quizAttempts/{quizAttemptId}",
+        "definition": {
+          "entityName": "QuizAttempt",
+          "schema": {
+            "$ref": "#/backend/entities/QuizAttempt"
+          },
+          "description": "Records individual attempts for questions within a quiz session. Access is restricted to the owning userId and parent quizSessionId in the path, ensuring authorization independence.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user who owns the parent quiz session."
+            },
+            {
+              "name": "quizSessionId",
+              "description": "The unique identifier of the parent quiz session."
+            },
+            {
+              "name": "quizAttemptId",
+              "description": "The unique identifier for a specific quiz attempt."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/favoriteQuestions/{favoriteQuestionId}",
+        "definition": {
+          "entityName": "FavoriteQuestion",
+          "schema": {
+            "$ref": "#/backend/entities/FavoriteQuestion"
+          },
+          "description": "Links a user to questions they have marked as favorites. Access is restricted to the owning userId in the path, ensuring authorization independence. Includes denormalized 'questionId' for direct querying.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user who favorited the question."
+            },
+            {
+              "name": "favoriteQuestionId",
+              "description": "The unique identifier for a specific favorited question entry."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The recommended Firestore structure is designed with a strong emphasis on Authorization Independence, Structural Segregation, and clear Access Modeling to ensure robust security rules, efficient querying, and simplified debugging. \n\n**Authorization Independence (Strategy A):**\n\n1.  **User-Owned Data:** For entities like `UserProfile`, `QuizSession`, `QuizAttempt`, and `FavoriteQuestion`, ownership is explicitly defined by nesting them under a user-specific path: `/users/{userId}/...`. This means the `userId` is a direct parameter in the path (`{userId}`), which makes it immediately available in Firestore security rules via `request.auth.uid == userId`. This eliminates the need for `get()` calls to a parent document (e.g., `UserProfile` or `QuizSession`) to determine ownership, thereby preventing broken atomic operations and simplifying rule evaluation.\n2.  **Denormalization for Context:** While `userId` is available in the path for user-owned subcollections, other critical context information is denormalized within the document itself to support querying and reduce `get()` calls for non-authorization purposes. For example, `QuizSession` stores `subjectId` and `difficultyLevel` directly, allowing for easy filtering and display without additional reads to the `Subject` collection within security rules for session access. Similarly, `FavoriteQuestion` includes `questionId` for direct querying.\n\n**Structural Segregation (Strategy B):**\n\n1.  **Public vs. Private Data:** Data is strictly segregated based on its security posture. `Subjects`, `Questions`, and their `Options` are stored in top-level, publicly readable collections (`/subjects`, `/questions`). This makes them universally accessible for quiz generation and display.\n2.  **User-Specific Data:** All user-specific progress and personal information (`UserProfile`, `QuizSession`, `QuizAttempt`, `FavoriteQuestion`) are confined within a `/users/{userId}/` hierarchy. This clearly separates private data, ensuring that access can be locked down to only the authenticated user (`request.auth.uid`).\n\n**Querying and Authorization Posture (QAPs - Rules are not Filters):**\n\n1.  **Global Public Collections (`/subjects`, `/questions`, `/questions/{questionId}/options`):** These collections are designed for public read access. Security rules for these paths will simply be `allow read: if true;`. This supports efficient `list` operations (e.g., fetching all subjects for selection, or querying questions by difficulty) without relying on rules to filter results. The presence of `isCorrect` in `Option` documents is noted as a potential security risk if clients directly access and misuse this information during a quiz. The design implicitly assumes that the `isCorrect` field will either be validated server-side (e.g., via Cloud Functions upon quiz submission) or will only be revealed to the client after an attempt has been made, rather than being exposed for filtering by rules.\n2.  **User-Specific Private Collections (`/users/{userId}/...`):** For these paths, `list` operations are inherently secure because the `userId` in the path strictly limits the scope to the authenticated user's data. For example, a query for `/users/{request.auth.uid}/quizSessions` will only return the current user's quiz sessions, enforced directly by rules like `allow list: if request.auth.uid == userId;`. This ensures that `list` operations do not accidentally expose other users' private data and that rules are not attempting to filter data, but rather enforcing access permissions based on the path.\n\n**In summary,** this structure prioritizes making authorization intent explicit through hierarchical pathing for user-owned data and top-level collections for public data. Denormalization is applied strategically to support efficient querying and ensure authorization independence where needed, leading to simple, robust, and easily debuggable security rules that adhere to the core design principles."
+  }
+}
