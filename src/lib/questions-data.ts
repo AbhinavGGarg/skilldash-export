@@ -241,6 +241,216 @@ export const QUESTION_BANK: Question[] = [
     choices: ["14 + 5i", "14 - 5i", "-10 + 11i", "-10 - 11i"],
     answerIndex: 0,
     explanation: "Multiply and combine: (2)(1)+(2)(4i)+(-3i)(1)+(-3i)(4i)=14+5i.",
+  },
+
+  // --- GEOMETRY ---
+  {
+    id: "geom-trig-01",
+    subject: "Geometry",
+    topic: "Trigonometry",
+    subtopic: "Trigonometry",
+    difficulty: "medium",
+    rigor: 2,
+    question: "In a right triangle, one acute angle is $35^\\circ$ and the hypotenuse is 10. What is the side opposite the $35^\\circ$ angle (nearest tenth)?",
+    choices: ["5.7", "8.2", "6.4", "4.1"],
+    answerIndex: 0,
+    explanation: "Use $\\sin(35^\\circ) = \\frac{\\text{opposite}}{10}$. So opposite $= 10\\sin(35^\\circ) \\approx 5.7$.",
+  },
+
+  // --- CALCULUS ---
+  {
+    id: "calc-lim-01",
+    subject: "Calculus",
+    topic: "Limits",
+    subtopic: "Limits & Continuity",
+    difficulty: "medium",
+    rigor: 2,
+    question: "Evaluate $\\lim_{x \\to 2} \\frac{x^2 - 4}{x - 2}$.",
+    choices: ["4", "2", "0", "Does not exist"],
+    answerIndex: 0,
+    explanation: "Factor numerator: $x^2-4=(x-2)(x+2)$. Cancel $(x-2)$, then substitute $x=2$ to get $4$.",
+  },
+
+  // --- AP STATISTICS ---
+  {
+    id: "apstat-prob-01",
+    subject: "AP Statistics",
+    topic: "Probability",
+    subtopic: "Probability Distributions",
+    difficulty: "medium",
+    rigor: 2,
+    question: "A fair die is rolled once. Let $X$ be the outcome. What is $P(X \\ge 5)$?",
+    choices: ["$\\frac{1}{3}$", "$\\frac{1}{6}$", "$\\frac{2}{3}$", "$\\frac{5}{6}$"],
+    answerIndex: 0,
+    explanation: "Outcomes $\\{5,6\\}$ are favorable: 2 out of 6 equally likely outcomes, so $2/6=1/3$.",
+  },
+
+  // --- BIOLOGY ---
+  {
+    id: "bio-cell-01",
+    subject: "Biology",
+    topic: "Cells",
+    subtopic: "Cell Structure",
+    difficulty: "easy",
+    rigor: 1,
+    question: "Which organelle is primarily responsible for producing ATP in eukaryotic cells?",
+    choices: ["Mitochondrion", "Nucleus", "Golgi apparatus", "Ribosome"],
+    answerIndex: 0,
+    explanation: "Mitochondria carry out cellular respiration and generate most ATP in eukaryotic cells.",
+  },
+
+  // --- CHEMISTRY ---
+  {
+    id: "chem-stoich-01",
+    subject: "Chemistry",
+    topic: "Stoichiometry",
+    subtopic: "Stoichiometry",
+    difficulty: "medium",
+    rigor: 2,
+    question: "How many moles of $O_2$ are required to completely react with 2 moles of $H_2$ in $2H_2 + O_2 \\to 2H_2O$?",
+    choices: ["1 mole", "2 moles", "0.5 mole", "4 moles"],
+    answerIndex: 0,
+    explanation: "From the balanced equation, 2 moles of $H_2$ react with 1 mole of $O_2$.",
+  },
+
+  // --- ENVIRONMENTAL SCIENCE ---
+  {
+    id: "env-eco-01",
+    subject: "Environmental Science",
+    topic: "Ecosystems",
+    subtopic: "Ecosystems",
+    difficulty: "easy",
+    rigor: 1,
+    question: "Which trophic level directly consumes producers in a food web?",
+    choices: ["Primary consumers", "Secondary consumers", "Decomposers", "Apex predators"],
+    answerIndex: 0,
+    explanation: "Primary consumers (herbivores) feed directly on producers such as plants and algae.",
+  },
+
+  // --- AP ENVIRONMENTAL SCIENCE ---
+  {
+    id: "apenv-global-01",
+    subject: "AP Environmental Science",
+    topic: "Global Change",
+    subtopic: "Global Change",
+    difficulty: "medium",
+    rigor: 2,
+    question: "Which gas contributes the most to recent anthropogenic global warming by total emitted volume?",
+    choices: ["Carbon dioxide ($CO_2$)", "Methane ($CH_4$)", "Nitrous oxide ($N_2O$)", "Water vapor ($H_2O$)"],
+    answerIndex: 0,
+    explanation: "While methane is more potent per molecule, carbon dioxide dominates total human-caused warming impact by volume emitted.",
+  },
+
+  // --- WORLD HISTORY ---
+  {
+    id: "wh-mid-01",
+    subject: "World History",
+    topic: "Middle Ages",
+    subtopic: "Middle Ages",
+    difficulty: "medium",
+    rigor: 2,
+    question: "Which institution in medieval Europe preserved many classical texts through manuscript copying?",
+    choices: ["Monasteries", "Guilds", "Feudal courts", "Merchant leagues"],
+    answerIndex: 0,
+    explanation: "Monastic scriptoria copied and preserved religious and classical manuscripts across the Middle Ages.",
+  },
+
+  // --- AP WORLD HISTORY ---
+  {
+    id: "apwh-global-01",
+    subject: "AP World History",
+    topic: "Global Interactions",
+    subtopic: "Global Interactions",
+    difficulty: "medium",
+    rigor: 2,
+    question: "The Columbian Exchange most directly refers to what historical process?",
+    choices: ["Transfer of plants, animals, and diseases between Afro-Eurasia and the Americas", "European military alliance systems", "Spread of Buddhism along the Silk Roads", "Industrial labor migration within Europe"],
+    answerIndex: 0,
+    explanation: "The Columbian Exchange was the transatlantic movement of crops, animals, pathogens, and people after 1492.",
+  },
+
+  // --- US GOVERNMENT ---
+  {
+    id: "usgov-const-01",
+    subject: "US Government",
+    topic: "Constitution",
+    subtopic: "The Constitution",
+    difficulty: "easy",
+    rigor: 1,
+    question: "The first ten amendments to the U.S. Constitution are known collectively as what?",
+    choices: ["Bill of Rights", "Federalist Papers", "Articles of Confederation", "Civil Rights Act"],
+    answerIndex: 0,
+    explanation: "The first ten amendments are called the Bill of Rights.",
+  },
+
+  // --- ECONOMICS ---
+  {
+    id: "econ-sd-01",
+    subject: "Economics",
+    topic: "Markets",
+    subtopic: "Supply and Demand",
+    difficulty: "medium",
+    rigor: 2,
+    question: "If demand increases while supply stays constant, what happens to equilibrium price?",
+    choices: ["It increases", "It decreases", "It stays the same", "It becomes zero"],
+    answerIndex: 0,
+    explanation: "A rightward demand shift with fixed supply raises equilibrium price (and quantity).",
+  },
+
+  // --- AP MACROECONOMICS ---
+  {
+    id: "apmacro-nia-01",
+    subject: "AP Macroeconomics",
+    topic: "National Income",
+    subtopic: "National Income Accounts",
+    difficulty: "medium",
+    rigor: 2,
+    question: "GDP measures the market value of final goods and services produced where and when?",
+    choices: ["Within a country in a given period", "By domestic firms worldwide over all time", "Only in government sectors each year", "Only consumer purchases in a month"],
+    answerIndex: 0,
+    explanation: "GDP is the value of final output produced domestically within a specified time period.",
+  },
+
+  // --- AP MICROECONOMICS ---
+  {
+    id: "apmicro-cons-01",
+    subject: "AP Microeconomics",
+    topic: "Consumer Choice",
+    subtopic: "Consumer Choice",
+    difficulty: "medium",
+    rigor: 2,
+    question: "Utility maximization under a budget constraint occurs when a consumer chooses the bundle that does what?",
+    choices: ["Reaches the highest attainable indifference curve", "Minimizes all spending", "Equalizes total utility across goods", "Sets price equal to marginal cost"],
+    answerIndex: 0,
+    explanation: "Consumers maximize utility by selecting the highest indifference curve they can afford given their budget line.",
+  },
+
+  // --- COMPUTER SCIENCE ---
+  {
+    id: "cs-func-01",
+    subject: "Computer Science",
+    topic: "Functions",
+    subtopic: "Functions",
+    difficulty: "easy",
+    rigor: 1,
+    question: "What is the primary purpose of defining a function in programming?",
+    choices: ["To encapsulate reusable logic", "To permanently store files", "To speed up internet access", "To replace all variables"],
+    answerIndex: 0,
+    explanation: "Functions package behavior so it can be reused, tested, and maintained more easily.",
+  },
+
+  // --- AP SPANISH ---
+  {
+    id: "apspan-verb-01",
+    subject: "AP Spanish",
+    topic: "Verb Tenses",
+    subtopic: "Verb Tenses",
+    difficulty: "medium",
+    rigor: 2,
+    question: "Choose the correct present perfect form: \"Ellos ___ estudiado mucho.\"",
+    choices: ["han", "ha", "he", "hemos"],
+    answerIndex: 0,
+    explanation: "For \"ellos\", the present perfect auxiliary is \"han\": \"Ellos han estudiado mucho.\"",
   }
 ];
 
