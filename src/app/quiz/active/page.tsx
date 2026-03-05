@@ -54,43 +54,36 @@ function ActiveQuizContent() {
       normalize(q.difficulty) === normalize(selectedDifficulty)
     );
 
-    // Step 2: Difficulty fallback (same subtopic/subject, any difficulty)
+    // Step 2: Difficulty fallback (same subject + same subtopic, any difficulty)
     if (filtered.length === 0) {
       filtered = subjectPool.filter(q =>
         isAllTopics || normalize(q.subtopic) === normalizedSubtopic
       );
     }
 
-    // Step 3: Subtopic fallback (same subject, any available unit + selected difficulty)
-    if (filtered.length === 0 && !isAllTopics) {
-      filtered = subjectPool.filter(
-        (q) => normalize(q.difficulty) === normalize(selectedDifficulty)
-      );
-    }
-
-    // Step 4: Final fallback (same subject, any available unit and difficulty)
-    if (filtered.length === 0) {
+    // Step 3: For comprehensive mode only, allow full-subject fallback.
+    if (filtered.length === 0 && isAllTopics) {
       filtered = subjectPool;
     }
 
-    // Step 5: Only show unavailable if truly empty for the selected subject
+    // Step 4: Only show unavailable if truly empty for the selected subtopic/subject scope
     if (filtered.length === 0) {
       setUnavailable(true);
       return null;
     }
 
-    // Step 6: Remove already-used questions
+    // Step 5: Remove already-used questions
     const unused = filtered.filter(q => !currentUsedIds.includes(q.id));
 
-    // Step 7: If selected unit is exhausted, broaden to unused items in the same subject first.
-    const subjectUnused = subjectPool.filter(q => !currentUsedIds.includes(q.id));
-    const expandedPool = unused.length > 0 ? unused : (!isAllTopics && subjectUnused.length > 0 ? subjectUnused : []);
+    // Step 6: If all used, reset within the same filtered pool.
+    const pool = unused.length > 0 ? unused : filtered;
 
-    // Step 8: If all used → reset rotation automatically
-    const pool = expandedPool.length > 0 ? expandedPool : filtered;
-    const nextQ = pool[Math.floor(Math.random() * pool.length)];
+    // Step 7: Prevent immediate back-to-back repeats when alternatives exist.
+    const lastUsedId = currentUsedIds[currentUsedIds.length - 1];
+    const nonImmediateRepeatPool = pool.length > 1 ? pool.filter((q) => q.id !== lastUsedId) : pool;
+    const nextQ = nonImmediateRepeatPool[Math.floor(Math.random() * nonImmediateRepeatPool.length)];
 
-    return { nextQ, usedWasReset: expandedPool.length === 0 };
+    return { nextQ, usedWasReset: unused.length === 0 };
   }, [selectedSubject, selectedSubtopic, selectedDifficulty]);
 
   // Initial Load

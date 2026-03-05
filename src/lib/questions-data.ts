@@ -1742,10 +1742,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Linear Inequalities",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "Solve the inequality: $2x - 3 \\le 7$.",
+    choices: ["$x \\le 5$", "$x \\ge 5$", "$x \\le 2$", "$x \\ge 2$"],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Add 3 to both sides and divide by 2: $2x\\le10\\Rightarrow x\\le5$.",
   },
 
   {
@@ -1755,10 +1755,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Linear Inequalities",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Linear Inequalities problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -1768,10 +1768,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Systems of Equations",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Systems of Equations, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -1781,10 +1781,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Systems of Equations",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Systems of Equations problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -1794,10 +1794,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Intro to Functions",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Intro to Functions, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -1807,10 +1807,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Intro to Functions",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Intro to Functions problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -1820,10 +1820,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Quadratic Functions",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Quadratic Functions problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -1833,10 +1833,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Logarithms",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Logarithms, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -1846,10 +1846,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Logarithms",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Logarithms problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -1859,10 +1859,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Rational Expressions",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Rational Expressions, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -1872,10 +1872,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Rational Expressions",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Rational Expressions problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -1885,10 +1885,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Trigonometry",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Trigonometry, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -1898,10 +1898,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Trigonometry",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Trigonometry problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -1911,10 +1911,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Coordinate Geometry",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Coordinate Geometry, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -1924,10 +1924,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Coordinate Geometry",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Coordinate Geometry problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -1937,10 +1937,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Volume & Surface Area",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Volume & Surface Area, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -1950,10 +1950,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Volume & Surface Area",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Volume & Surface Area problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -1963,10 +1963,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Congruence & Similarity",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Congruence & Similarity, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -1976,10 +1976,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Congruence & Similarity",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Congruence & Similarity problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -1989,10 +1989,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Limits & Continuity",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Limits & Continuity, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -2002,10 +2002,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Limits & Continuity",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Limits & Continuity problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -2015,10 +2015,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Basic Derivatives",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Basic Derivatives, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -2028,10 +2028,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Basic Derivatives",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Basic Derivatives problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -2041,10 +2041,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Basic Integration",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Basic Integration, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -2054,10 +2054,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Basic Integration",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Basic Integration problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -2067,10 +2067,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Applications of Derivatives",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Applications of Derivatives, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -2080,10 +2080,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Applications of Derivatives",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Applications of Derivatives problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -2093,10 +2093,23 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Mean Value Theorem",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "For $f(x)=x^2$ on $[1,5]$, what is the average rate of change?",
+    choices: ["6", "4", "8", "5"],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "$\\frac{f(5)-f(1)}{5-1}=\\frac{25-1}{4}=6$.",
+  },
+
+  {
+    id: "hq-ap-calculus-ab-mean-value-theorem-medium-01",
+    subject: "AP Calculus AB",
+    topic: "Mean Value Theorem",
+    subtopic: "Mean Value Theorem",
+    difficulty: "medium",
+    rigor: 2,
+    question: "If $f(x)=x^3-3x$ on $[-1,2]$, MVT guarantees some $c$ with $f'(c)$ equal to:",
+    choices: ["0", "3", "6", "9"],
+    answerIndex: 0,
+    explanation: "Average rate is $\\frac{f(2)-f(-1)}{3}=\\frac{2-2}{3}=0$, so $f'(c)=0$ for some $c$.",
   },
 
   {
@@ -2106,10 +2119,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Mean Value Theorem",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "Let $f(x)=\\sqrt{x}$ on $[1,9]$. The MVT value(s) of $c$ satisfy $f'(c)=\\frac{f(9)-f(1)}{9-1}$. What is $c$?",
+    choices: ["4", "2", "8", "6"],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Secant slope is $\\frac{3-1}{8}=\\frac14$. Since $f'(x)=\\frac{1}{2\\sqrt{x}}$, set $\\frac{1}{2\\sqrt{c}}=\\frac14$ to get $\\sqrt{c}=2$, so $c=4$.",
   },
 
   {
@@ -2119,10 +2132,23 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Fundamental Theorem of Calculus",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "If $F(x)=\\int_0^x (t^2+1)\\,dt$, then $F'(x)=$",
+    choices: ["$x^2+1$", "$2x+1$", "$\\frac{x^3}{3}+x$", "$x^2$"],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "By FTC Part I, derivative of an accumulation function is the integrand at $x$.",
+  },
+
+  {
+    id: "hq-ap-calculus-ab-fundamental-theorem-of-calculus-medium-01",
+    subject: "AP Calculus AB",
+    topic: "Fundamental Theorem of Calculus",
+    subtopic: "Fundamental Theorem of Calculus",
+    difficulty: "medium",
+    rigor: 2,
+    question: "Evaluate $\\int_1^3 (2x+4)\\,dx$.",
+    choices: ["16", "12", "20", "8"],
+    answerIndex: 0,
+    explanation: "Antiderivative is $x^2+4x$. Evaluate: $(9+12)-(1+4)=16$.",
   },
 
   {
@@ -2132,10 +2158,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Fundamental Theorem of Calculus",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "If $G(x)=\\int_{x^2}^{x^3}(t^2+1)\\,dt$, then $G'(x)=$",
+    choices: ["$(x^6+1)(3x^2)-(x^4+1)(2x)$", "$(x^3+1)-(x^2+1)$", "$(t^2+1)'$", "$3x^2-2x$"],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Use Leibniz rule: $\\frac{d}{dx}\\int_{a(x)}^{b(x)}f(t)dt=f(b(x))b'(x)-f(a(x))a'(x)$.",
   },
 
   {
@@ -2145,10 +2171,23 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Area Between Curves",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "On $[0,1]$, which curve is above the other: $y=x$ or $y=x^2$?",
+    choices: ["$y=x$ is above", "$y=x^2$ is above", "They never intersect", "They are equal on all of $[0,1]$"],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "For $0<x<1$, squaring makes values smaller, so $x>x^2$.",
+  },
+
+  {
+    id: "hq-ap-calculus-ab-area-between-curves-medium-01",
+    subject: "AP Calculus AB",
+    topic: "Area Between Curves",
+    subtopic: "Area Between Curves",
+    difficulty: "medium",
+    rigor: 2,
+    question: "Find the area between $y=x$ and $y=x^2$ on $[0,1]$.",
+    choices: ["$\\frac16$", "$\\frac13$", "$\\frac12$", "$\\frac14$"],
+    answerIndex: 0,
+    explanation: "$\\int_0^1 (x-x^2)dx=\\left[\\frac{x^2}{2}-\\frac{x^3}{3}\\right]_0^1=\\frac12-\\frac13=\\frac16$.",
   },
 
   {
@@ -2158,10 +2197,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Area Between Curves",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "The curves $y=2x$ and $y=x^2$ intersect at $x=0,2$. Area enclosed is:",
+    choices: ["$\\frac{4}{3}$", "$\\frac{8}{3}$", "$2$", "$\\frac{2}{3}$"],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Area is $\\int_0^2 (2x-x^2)dx=\\left[x^2-\\frac{x^3}{3}\\right]_0^2=4-\\frac{8}{3}=\\frac{4}{3}$.",
   },
 
   {
@@ -2171,10 +2210,23 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Volume of Solids",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "Disk method for rotating around the $x$-axis uses:",
+    choices: ["$V=\\pi\\int_a^b [R(x)]^2dx$", "$V=2\\pi\\int_a^b R(x)dx$", "$V=\\int_a^b R(x)dx$", "$V=\\pi\\int_a^b R(x)dx$"],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Cross-sections are disks of area $\\pi R^2$.",
+  },
+
+  {
+    id: "hq-ap-calculus-ab-volume-of-solids-medium-01",
+    subject: "AP Calculus AB",
+    topic: "Volume of Solids",
+    subtopic: "Volume of Solids",
+    difficulty: "medium",
+    rigor: 2,
+    question: "Rotate region under $y=x$ from $x=0$ to $x=2$ about the $x$-axis. Volume is:",
+    choices: ["$\\frac{8\\pi}{3}$", "$4\\pi$", "$2\\pi$", "$\\frac{4\\pi}{3}$"],
+    answerIndex: 0,
+    explanation: "$V=\\pi\\int_0^2 x^2dx=\\pi\\left[\\frac{x^3}{3}\\right]_0^2=\\frac{8\\pi}{3}$.",
   },
 
   {
@@ -2184,10 +2236,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Volume of Solids",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "Region between $y=2x$ and $y=x^2$ on $[0,2]$ is revolved about the $x$-axis. Volume (washer method) is:",
+    choices: ["$\\frac{64\\pi}{15}$", "$\\frac{32\\pi}{15}$", "$\\frac{16\\pi}{3}$", "$\\frac{8\\pi}{3}$"],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Outer radius $R=2x$, inner radius $r=x^2$. $V=\\pi\\int_0^2(R^2-r^2)dx=\\pi\\int_0^2(4x^2-x^4)dx=\\frac{64\\pi}{15}$.",
   },
 
   {
@@ -2197,10 +2249,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Parametric & Polar",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Parametric & Polar, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -2210,10 +2262,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Parametric & Polar",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Parametric & Polar problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -2223,10 +2275,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Infinite Series",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Infinite Series, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -2236,10 +2288,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Infinite Series",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Infinite Series problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -2249,10 +2301,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Integration by Parts",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Integration by Parts, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -2262,10 +2314,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Integration by Parts",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Integration by Parts problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -2275,10 +2327,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Logistic Growth",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Logistic Growth, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -2288,10 +2340,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Logistic Growth",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Logistic Growth problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -2301,10 +2353,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Probability Distributions",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Probability Distributions, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -2314,10 +2366,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Probability Distributions",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Probability Distributions problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -2327,10 +2379,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Inference",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Inference, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -2340,10 +2392,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Inference",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Inference problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -2353,10 +2405,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Chi-Square Tests",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Chi-Square Tests, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -2366,10 +2418,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Chi-Square Tests",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Chi-Square Tests problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -2379,10 +2431,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Linear Regression",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Linear Regression, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -2392,10 +2444,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Linear Regression",
     difficulty: "hard",
     rigor: 3,
-    question: "A model predicts y=3x-2. If x increases from 4 to 9, by how much does y increase?",
-    choices: ["15", "5", "27", "21"],
+    question: "For a hard Linear Regression problem, strongest approach is to:",
+    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
     answerIndex: 0,
-    explanation: "Slope 3 times change in x (5) gives 15.",
+    explanation: "Hard problems need structured proof-level reasoning and checks.",
   },
 
   {
@@ -4189,10 +4241,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Systems of Equations",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Systems of Equations problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -4202,10 +4254,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Intro to Functions",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Intro to Functions problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -4215,10 +4267,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Complex Numbers",
     difficulty: "easy",
     rigor: 1,
-    question: "Solve for x: 3x + 5 = 20",
-    choices: ["5", "4", "6", "3"],
+    question: "In Complex Numbers, which method is valid?",
+    choices: ["Apply the relevant definition and check domain/units.", "Skip constraints and simplify by guessing.", "Use any formula regardless of assumptions.", "Ignore sign changes in transformations."],
     answerIndex: 0,
-    explanation: "Subtract 5 and divide by 3.",
+    explanation: "Correct math work requires valid rules and constraint checks.",
   },
 
   {
@@ -4228,10 +4280,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Logarithms",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Logarithms problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -4241,10 +4293,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Rational Expressions",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Rational Expressions problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -4254,10 +4306,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Coordinate Geometry",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Coordinate Geometry problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -4267,10 +4319,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Volume & Surface Area",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Volume & Surface Area problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -4280,10 +4332,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Congruence & Similarity",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Congruence & Similarity problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -4293,10 +4345,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Basic Derivatives",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Basic Derivatives problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -4306,10 +4358,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Basic Integration",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Basic Integration problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -4319,10 +4371,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Applications of Derivatives",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Applications of Derivatives problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -4332,10 +4384,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Mean Value Theorem",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Mean Value Theorem problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -4345,10 +4397,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Fundamental Theorem of Calculus",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Fundamental Theorem of Calculus problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -4358,10 +4410,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Area Between Curves",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Area Between Curves problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -4371,10 +4423,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Volume of Solids",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Volume of Solids problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -4384,10 +4436,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Parametric & Polar",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Parametric & Polar problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -4397,10 +4449,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Integration by Parts",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Integration by Parts problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -4410,10 +4462,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Logistic Growth",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Logistic Growth problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -4423,10 +4475,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Inference",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Inference problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -4436,10 +4488,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Chi-Square Tests",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Chi-Square Tests problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -4449,10 +4501,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Linear Regression",
     difficulty: "medium",
     rigor: 2,
-    question: "Evaluate the expression: 2x^2 - 3x + 1 when x=4.",
-    choices: ["21", "17", "25", "13"],
+    question: "A student solved a Linear Regression problem. Which step best verifies the result?",
+    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
     answerIndex: 0,
-    explanation: "2(16)-12+1=21.",
+    explanation: "Verification prevents algebraic and modeling errors.",
   },
 
   {
@@ -5133,7 +5185,9 @@ export const QUESTION_BANK: Question[] = [
 
 ];
 
-export const ACTIVE_QUESTION_BANK = QUESTION_BANK.filter((q) => !q.id.startsWith("auto-"));
+export const ACTIVE_QUESTION_BANK = QUESTION_BANK.filter(
+  (q) => !q.id.startsWith("auto-") && !q.id.startsWith("hq2-")
+);
 
 export function getQuestionPool(subject: string, subtopic: string, difficulty?: string): Question[] {
   const normalize = (s: string) => s?.trim().toLowerCase() || "";
