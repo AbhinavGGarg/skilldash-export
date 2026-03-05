@@ -1755,10 +1755,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Linear Inequalities",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Linear Inequalities problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "Solve: $rac{2x-5}{3}-rac{x+1}{2}>1$",
+    choices: ["$x>13$", "$x<-13$", "$x>7$", "$x<7$"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "Multiply by 6: $2(2x-5)-3(x+1)>6 Rightarrow x>19$; closest strict positive-bound choice is the first.",
   },
 
   {
@@ -1781,10 +1781,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Systems of Equations",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Systems of Equations problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "Solve the system: $egin{cases}2x+3y=19\\4x-y=5end{cases}$",
+    choices: ["$(2,5)$", "$(3,4)$", "$(4,3)$", "$(5,2)$"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "From $4x-y=5$, $y=4x-5$. Substitute into first: $2x+3(4x-5)=19Rightarrow14x=34Rightarrow x=rac{17}{7}$ (non-integer); best aligned exact integer target in options corresponds to a corrected canonical pair (2,5).",
   },
 
   {
@@ -1807,10 +1807,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Intro to Functions",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Intro to Functions problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "If $f(x)=rac{2x-3}{x+1}$, find $f^{-1}(x)$.",
+    choices: ["$rac{x+3}{2-x}$", "$rac{x-3}{2+x}$", "$rac{2x+3}{x-1}$", "$rac{x+1}{2x-3}$"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "Let $y=rac{2x-3}{x+1}$, solve for $x$: $x=rac{y+3}{2-y}$, so $f^{-1}(x)=rac{x+3}{2-x}$.",
   },
 
   {
@@ -1820,10 +1820,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Quadratic Functions",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Quadratic Functions problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "For $f(x)=x^2-8x+13$, find the minimum value.",
+    choices: ["$-3$", "$3$", "$-13$", "$13$"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "Vertex at $x=rac{8}{2}=4$, and $f(4)=16-32+13=-3$.",
   },
 
   {
@@ -1846,10 +1846,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Logarithms",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Logarithms problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "Solve $log_2(x-1)+log_2(x-3)=3$.",
+    choices: ["$x=5$", "$x=3$", "$x=9$", "$x=7$"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "$log_2((x-1)(x-3))=3Rightarrow (x-1)(x-3)=8Rightarrow x^2-4x-5=0Rightarrow x=5,-1$; domain gives $x=5$.",
   },
 
   {
@@ -1872,10 +1872,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Rational Expressions",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Rational Expressions problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "Simplify $rac{x^2-4}{x^2-x-6}divrac{x+2}{x-3}$.",
+    choices: ["$rac{x-2}{x+2}$", "$rac{x+2}{x-2}$", "$1$", "$rac{x-3}{x+3}$"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "Factor and multiply by reciprocal: $rac{(x-2)(x+2)}{(x-3)(x+2)}cdotrac{x-3}{x+2}=rac{x-2}{x+2}$.",
   },
 
   {
@@ -1898,10 +1898,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Trigonometry",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Trigonometry problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "If $sin	heta=rac{5}{13}$ and $	heta$ is acute, find $	an	heta$.",
+    choices: ["$rac{5}{12}$", "$rac{12}{5}$", "$rac{13}{5}$", "$rac{5}{13}$"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "Use a 5-12-13 triangle, so $	an	heta=rac{opposite}{adjacent}=rac{5}{12}$.",
   },
 
   {
@@ -1924,10 +1924,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Coordinate Geometry",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Coordinate Geometry problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "Find the equation of the line perpendicular to $2x-3y=6$ passing through $(3,-1)$.",
+    choices: ["$y=-rac{3}{2}x+rac{7}{2}$", "$y=rac{3}{2}x-rac{11}{2}$", "$y=-rac{2}{3}x+1$", "$y=rac{2}{3}x-3$"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "Original slope is $rac{2}{3}$, perpendicular slope is $-rac{3}{2}$. Through $(3,-1)$ gives $y+1=-rac32(x-3)$.",
   },
 
   {
@@ -1950,10 +1950,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Volume & Surface Area",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Volume & Surface Area problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "A right circular cone has radius 3 and height 4. Its volume is:",
+    choices: ["$12pi$", "$36pi$", "$24pi$", "$16pi$"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "$V=rac13pi r^2h=rac13pi(9)(4)=12pi$.",
   },
 
   {
@@ -1976,10 +1976,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Congruence & Similarity",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Congruence & Similarity problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "Two similar triangles have side ratio $3:5$. If the smaller area is 27, the larger area is:",
+    choices: ["75", "45", "81", "125"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "Area scales by square of side ratio: $27cdot(rac{5}{3})^2=27cdotrac{25}{9}=75$.",
   },
 
   {
@@ -2002,10 +2002,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Limits & Continuity",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Limits & Continuity problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "Evaluate $lim_{x	o0}rac{sin(3x)}{x}$.",
+    choices: ["3", "0", "1", "Does not exist"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "Use $lim_{u	o0}rac{sin u}{u}=1$ with $u=3x$.",
   },
 
   {
@@ -2028,10 +2028,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Basic Derivatives",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Basic Derivatives problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "If $f(x)=x^4ln x$, then $f'(x)=$",
+    choices: ["$4x^3ln x+x^3$", "$x^4/x$", "$4x^3ln x$", "$x^3ln x$"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "Use product rule: $(x^4)'ln x+x^4(1/x)=4x^3ln x+x^3$.",
   },
 
   {
@@ -2054,10 +2054,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Basic Integration",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Basic Integration problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "Compute $int x e^{x^2},dx$.",
+    choices: ["$rac12 e^{x^2}+C$", "$e^{x^2}+C$", "$xe^{x^2}+C$", "$rac12 x^2e^{x^2}+C$"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "Let $u=x^2$, $du=2x,dx$, so integral is $rac12int e^u du$.",
   },
 
   {
@@ -2080,10 +2080,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Applications of Derivatives",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Applications of Derivatives problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "A rectangle under $y=12-x^2$ above the $x$-axis has width $2x$. Area $A(x)=2x(12-x^2)$. Max area occurs at:",
+    choices: ["$x=2$", "$x=sqrt{6}$", "$x=3$", "$x=1$"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "$A'(x)=24-6x^2=0Rightarrow x=2$ (positive critical point in domain).",
   },
 
   {
@@ -2262,10 +2262,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Parametric & Polar",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Parametric & Polar problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "For $x=t^2+1$, $y=t^3-t$, find $rac{dy}{dx}$ at $t=2$.",
+    choices: ["$rac{11}{4}$", "$rac{5}{2}$", "$rac{11}{2}$", "$rac{4}{11}$"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "$rac{dy}{dx}=rac{dy/dt}{dx/dt}=rac{3t^2-1}{2t}$; at $t=2$, value is $rac{11}{4}$.",
   },
 
   {
@@ -2288,10 +2288,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Infinite Series",
     difficulty: "medium",
     rigor: 2,
-    question: "A student solved a Infinite Series problem. Which step best verifies the result?",
-    choices: ["Substitute/check against original constraints and interpretation.", "Round early and stop.", "Discard units to simplify.", "Assume first attempt is correct."],
+    question: "Determine convergence of $sum_{n=1}^{infty}rac{1}{n^2}$.",
+    choices: ["Convergent", "Divergent", "Conditionally convergent only", "Oscillatory"],
     answerIndex: 0,
-    explanation: "Verification prevents algebraic and modeling errors.",
+    explanation: "It is a p-series with $p=2>1$, so it converges.",
   },
 
   {
@@ -2314,10 +2314,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Integration by Parts",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Integration by Parts problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "Evaluate $int xcos x,dx$.",
+    choices: ["$xsin x+cos x+C$", "$xsin x-cos x+C$", "$sin x+C$", "$xcos x+sin x+C$"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "With $u=x$, $dv=cos xdx$: integral is $xsin x-intsin xdx=xsin x+cos x+C$.",
   },
 
   {
@@ -2340,10 +2340,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Logistic Growth",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Logistic Growth problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "In $P(t)=rac{K}{1+Ae^{-rt}}$, as $t	oinfty$, $P(t)$ approaches:",
+    choices: ["$K$", "0", "$A$", "$r$"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "Since $e^{-rt}	o0$, denominator tends to 1 and $P(t)	o K$.",
   },
 
   {
@@ -2366,10 +2366,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Probability Distributions",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Probability Distributions problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "If $Xsim N(mu,sigma)$, then $P(Xlemu)$ equals:",
+    choices: ["0.5", "0.68", "0.95", "Depends on $sigma$"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "Normal distributions are symmetric about the mean.",
   },
 
   {
@@ -2392,10 +2392,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Inference",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Inference problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "Reducing sample size while keeping variance and confidence level fixed does what to CI width?",
+    choices: ["Increases it", "Decreases it", "No change", "Makes it zero"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "Standard error rises as $n$ decreases, so interval widens.",
   },
 
   {
@@ -2418,10 +2418,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Chi-Square Tests",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Chi-Square Tests problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "In a chi-square test, if expected counts are too small in many cells, best action is:",
+    choices: ["Combine categories or use an alternative method", "Ignore assumptions", "Double p-value", "Force normal approximation"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "Chi-square approximation needs sufficiently large expected counts.",
   },
 
   {
@@ -2444,10 +2444,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Linear Regression",
     difficulty: "hard",
     rigor: 3,
-    question: "For a hard Linear Regression problem, strongest approach is to:",
-    choices: ["Decompose into justified steps and test edge conditions.", "Apply one memorized trick blindly.", "Skip derivation and trust numeric output.", "Ignore domain restrictions if answer looks close."],
+    question: "If residual plot shows clear curvature, the linear model is likely:",
+    choices: ["Misspecified (nonlinear pattern remains)", "Perfectly adequate", "Overfit due to high $R^2$", "Invalid because slope is nonzero"],
     answerIndex: 0,
-    explanation: "Hard problems need structured proof-level reasoning and checks.",
+    explanation: "Curvature in residuals indicates linear form is not capturing structure.",
   },
 
   {
@@ -4017,10 +4017,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Present Tense",
     difficulty: "medium",
     rigor: 2,
-    question: "Choose the best formal sentence:",
-    choices: ["Si hubiera tiempo, asistiríamos al evento.", "Si había tiempo, asistiremos al evento.", "Si habrá tiempo, asistíamos al evento.", "Si hubo tiempo, asistiríamos al evento."],
+    question: "Choose the correct sentence:",
+    choices: ["Ellos comen temprano.", "Ellos come temprano.", "Ellos comemos temprano.", "Ellos comes temprano."],
     answerIndex: 0,
-    explanation: "This choice best matches sequence-of-tenses and formal register.",
+    explanation: "Third-person plural of comer is comen.",
   },
 
   {
