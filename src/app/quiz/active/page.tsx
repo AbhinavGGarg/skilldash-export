@@ -41,32 +41,48 @@ function ActiveQuizContent() {
     }
 
     const isAllTopics = normalize(selectedSubtopic) === "all topics";
+    const normalizedSubject = normalize(selectedSubject);
+    const normalizedSubtopic = normalize(selectedSubtopic);
+
+    const subjectPool = QUESTION_BANK.filter(
+      (q) => normalize(q.subject) === normalizedSubject
+    );
 
     // Step 1: Strict filtering (subject, subtopic, difficulty) - Topic removed per user request
-    let filtered = QUESTION_BANK.filter(q =>
-      normalize(q.subject) === normalize(selectedSubject) &&
-      (isAllTopics || normalize(q.subtopic) === normalize(selectedSubtopic)) &&
+    let filtered = subjectPool.filter(q =>
+      (isAllTopics || normalize(q.subtopic) === normalizedSubtopic) &&
       normalize(q.difficulty) === normalize(selectedDifficulty)
     );
 
     // Step 2: Difficulty fallback (same subtopic/subject, any difficulty)
     if (filtered.length === 0) {
-      filtered = QUESTION_BANK.filter(q =>
-        normalize(q.subject) === normalize(selectedSubject) &&
-        (isAllTopics || normalize(q.subtopic) === normalize(selectedSubtopic))
+      filtered = subjectPool.filter(q =>
+        isAllTopics || normalize(q.subtopic) === normalizedSubtopic
       );
     }
 
-    // Step 3: Only show unavailable if truly empty
+    // Step 3: Subtopic fallback (same subject, any available unit + selected difficulty)
+    if (filtered.length === 0 && !isAllTopics) {
+      filtered = subjectPool.filter(
+        (q) => normalize(q.difficulty) === normalize(selectedDifficulty)
+      );
+    }
+
+    // Step 4: Final fallback (same subject, any available unit and difficulty)
+    if (filtered.length === 0) {
+      filtered = subjectPool;
+    }
+
+    // Step 5: Only show unavailable if truly empty for the selected subject
     if (filtered.length === 0) {
       setUnavailable(true);
       return null;
     }
 
-    // Step 4: Remove already-used questions
+    // Step 6: Remove already-used questions
     const unused = filtered.filter(q => !currentUsedIds.includes(q.id));
 
-    // Step 5: If all used → reset rotation automatically
+    // Step 7: If all used → reset rotation automatically
     const pool = unused.length > 0 ? unused : filtered;
     const nextQ = pool[Math.floor(Math.random() * pool.length)];
 
