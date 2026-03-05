@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { QUESTION_BANK } from "@/lib/questions-data";
 
 const SUBJECT_GROUPS = [
   {
@@ -72,52 +71,30 @@ const SUBJECT_GROUPS = [
   }
 ];
 
-const AVAILABLE_SUBTOPICS_BY_SUBJECT = QUESTION_BANK.reduce<Record<string, string[]>>((acc, q) => {
-  if (!acc[q.subject]) {
-    acc[q.subject] = [];
-  }
-  if (!acc[q.subject].includes(q.subtopic)) {
-    acc[q.subject].push(q.subtopic);
-  }
-  return acc;
-}, {});
-
-const FIRST_AVAILABLE_COURSE =
-  SUBJECT_GROUPS.flatMap((group) => group.courses).find((course) => AVAILABLE_SUBTOPICS_BY_SUBJECT[course.name]?.length)?.name ||
-  "Algebra 1";
-
 function QuizSetupContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   
-  const [selectedCourse, setSelectedCourse] = useState(searchParams.get('subject') || FIRST_AVAILABLE_COURSE);
+  const [selectedCourse, setSelectedCourse] = useState(searchParams.get('subject') || "Algebra 1");
   const [selectedSubtopic, setSelectedSubtopic] = useState("All Topics");
   const [difficulty, setDifficulty] = useState("Medium");
   const [questionCount, setQuestionCount] = useState("5");
 
-  const availableSubtopics = useMemo(
-    () => AVAILABLE_SUBTOPICS_BY_SUBJECT[selectedCourse] || [],
+  const currentCourseData = useMemo(
+    () => SUBJECT_GROUPS.flatMap((g) => g.courses).find((c) => c.name === selectedCourse),
     [selectedCourse]
   );
 
-  const courseHasQuestionData = availableSubtopics.length > 0;
+  const availableSubtopics = currentCourseData?.subtopics ?? [];
 
   useEffect(() => {
-    if (!courseHasQuestionData) {
-      setSelectedCourse(FIRST_AVAILABLE_COURSE);
-      setSelectedSubtopic("All Topics");
-    }
-  }, [courseHasQuestionData]);
-
-  useEffect(() => {
-    if (selectedSubtopic !== "All Topics" && !availableSubtopics.includes(selectedSubtopic)) {
+    if (selectedSubtopic !== "All Topics" && availableSubtopics.length > 0 && !availableSubtopics.includes(selectedSubtopic)) {
       setSelectedSubtopic("All Topics");
     }
   }, [availableSubtopics, selectedSubtopic]);
 
   const startQuiz = () => {
-    if (!courseHasQuestionData) return;
     startTransition(() => {
       const url = `/quiz/active?subject=${encodeURIComponent(selectedCourse)}&subtopic=${encodeURIComponent(selectedSubtopic)}&difficulty=${difficulty}&count=${questionCount}`;
       router.push(url);
@@ -151,27 +128,22 @@ function QuizSetupContent() {
                       </h4>
                       <div className="space-y-1">
                         {group.courses.map((course) => {
-                          const hasData = Boolean(AVAILABLE_SUBTOPICS_BY_SUBJECT[course.name]?.length);
                           return (
                           <button
                             key={course.name}
                             onClick={() => {
-                              if (!hasData) return;
                               setSelectedCourse(course.name);
                               setSelectedSubtopic("All Topics");
                             }}
-                            disabled={!hasData}
                             className={cn(
                               "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-left",
                               selectedCourse === course.name 
                                 ? "bg-primary text-primary-foreground shadow-sm" 
-                                : "hover:bg-muted text-muted-foreground",
-                              !hasData && "opacity-50 cursor-not-allowed hover:bg-transparent"
+                                : "hover:bg-muted text-muted-foreground"
                             )}
                           >
                             <span className="truncate">{course.name}</span>
                             <span className="flex items-center gap-2">
-                              {!hasData && <span className="text-[10px] uppercase tracking-wider">Soon</span>}
                               {selectedCourse === course.name && <ChevronRight className="h-4 w-4 shrink-0" />}
                             </span>
                           </button>
@@ -225,11 +197,6 @@ function QuizSetupContent() {
                       <span className="text-[11px] text-muted-foreground leading-relaxed">Focus strictly on {subtopic} mastery and specific logic.</span>
                     </button>
                   ))}
-                  {availableSubtopics.length === 0 && (
-                    <div className="col-span-full rounded-2xl border border-dashed p-5 text-sm text-muted-foreground">
-                      Verified question sets for this course are coming soon.
-                    </div>
-                  )}
                 </div>
               </ScrollArea>
             </div>
@@ -271,7 +238,7 @@ function QuizSetupContent() {
                 <Button 
                   className="w-full h-16 rounded-2xl text-lg font-headline shadow-lg active:scale-[0.98] transition-all" 
                   onClick={startQuiz} 
-                  disabled={isPending || !courseHasQuestionData}
+                  disabled={isPending}
                 >
                   {isPending ? (
                     <div className="flex items-center gap-2">

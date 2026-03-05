@@ -82,11 +82,15 @@ function ActiveQuizContent() {
     // Step 6: Remove already-used questions
     const unused = filtered.filter(q => !currentUsedIds.includes(q.id));
 
-    // Step 7: If all used → reset rotation automatically
-    const pool = unused.length > 0 ? unused : filtered;
+    // Step 7: If selected unit is exhausted, broaden to unused items in the same subject first.
+    const subjectUnused = subjectPool.filter(q => !currentUsedIds.includes(q.id));
+    const expandedPool = unused.length > 0 ? unused : (!isAllTopics && subjectUnused.length > 0 ? subjectUnused : []);
+
+    // Step 8: If all used → reset rotation automatically
+    const pool = expandedPool.length > 0 ? expandedPool : filtered;
     const nextQ = pool[Math.floor(Math.random() * pool.length)];
 
-    return { nextQ, usedWasReset: unused.length <= 1 };
+    return { nextQ, usedWasReset: expandedPool.length === 0 };
   }, [selectedSubject, selectedSubtopic, selectedDifficulty]);
 
   // Initial Load
