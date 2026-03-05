@@ -6,7 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { QUESTION_BANK, Question } from "@/lib/questions-data";
+import { ACTIVE_QUESTION_BANK, Question } from "@/lib/questions-data";
 import { Check, X, Loader2, ArrowRight, BookOpen, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MathText } from "@/components/ui/math-text";
@@ -44,7 +44,7 @@ function ActiveQuizContent() {
     const normalizedSubject = normalize(selectedSubject);
     const normalizedSubtopic = normalize(selectedSubtopic);
 
-    const subjectPool = QUESTION_BANK.filter(
+    const subjectPool = ACTIVE_QUESTION_BANK.filter(
       (q) => normalize(q.subject) === normalizedSubject
     );
 
