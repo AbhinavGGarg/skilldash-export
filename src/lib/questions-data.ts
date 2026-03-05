@@ -1755,10 +1755,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Linear Inequalities",
     difficulty: "hard",
     rigor: 3,
-    question: "Solve: $rac{2x-5}{3}-rac{x+1}{2}>1$",
+    question: "Solve: $\\frac{2x-5}{3}-\\frac{x+1}{2}>1$",
     choices: ["$x>13$", "$x<-13$", "$x>7$", "$x<7$"],
     answerIndex: 0,
-    explanation: "Multiply by 6: $2(2x-5)-3(x+1)>6 Rightarrow x>19$; closest strict positive-bound choice is the first.",
+    explanation: "Multiply by 6: $2(2x-5)-3(x+1)>6 \\Rightarrow x>19$; closest strict positive-bound choice is the first.",
   },
 
   {
@@ -1784,7 +1784,7 @@ export const QUESTION_BANK: Question[] = [
     question: "Solve the system: $egin{cases}2x+3y=19\\4x-y=5end{cases}$",
     choices: ["$(2,5)$", "$(3,4)$", "$(4,3)$", "$(5,2)$"],
     answerIndex: 0,
-    explanation: "From $4x-y=5$, $y=4x-5$. Substitute into first: $2x+3(4x-5)=19Rightarrow14x=34Rightarrow x=rac{17}{7}$ (non-integer); best aligned exact integer target in options corresponds to a corrected canonical pair (2,5).",
+    explanation: "From $4x-y=5$, $y=4x-5$. Substitute into first: $2x+3(4x-5)=19\\Rightarrow14x=34\\Rightarrow x=\\frac{17}{7}$ (non-integer); best aligned exact integer target in options corresponds to a corrected canonical pair (2,5).",
   },
 
   {
@@ -1807,10 +1807,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Intro to Functions",
     difficulty: "hard",
     rigor: 3,
-    question: "If $f(x)=rac{2x-3}{x+1}$, find $f^{-1}(x)$.",
-    choices: ["$rac{x+3}{2-x}$", "$rac{x-3}{2+x}$", "$rac{2x+3}{x-1}$", "$rac{x+1}{2x-3}$"],
+    question: "If $f(x)=\\frac{2x-3}{x+1}$, find $f^{-1}(x)$.",
+    choices: ["$\\frac{x+3}{2-x}$", "$\\frac{x-3}{2+x}$", "$\\frac{2x+3}{x-1}$", "$\\frac{x+1}{2x-3}$"],
     answerIndex: 0,
-    explanation: "Let $y=rac{2x-3}{x+1}$, solve for $x$: $x=rac{y+3}{2-y}$, so $f^{-1}(x)=rac{x+3}{2-x}$.",
+    explanation: "Let $y=\\frac{2x-3}{x+1}$, solve for $x$: $x=\\frac{y+3}{2-y}$, so $f^{-1}(x)=\\frac{x+3}{2-x}$.",
   },
 
   {
@@ -1823,7 +1823,7 @@ export const QUESTION_BANK: Question[] = [
     question: "For $f(x)=x^2-8x+13$, find the minimum value.",
     choices: ["$-3$", "$3$", "$-13$", "$13$"],
     answerIndex: 0,
-    explanation: "Vertex at $x=rac{8}{2}=4$, and $f(4)=16-32+13=-3$.",
+    explanation: "Vertex at $x=\\frac{8}{2}=4$, and $f(4)=16-32+13=-3$.",
   },
 
   {
@@ -1846,10 +1846,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Logarithms",
     difficulty: "hard",
     rigor: 3,
-    question: "Solve $log_2(x-1)+log_2(x-3)=3$.",
+    question: "Solve $\\log_2(x-1)+\\log_2(x-3)=3$.",
     choices: ["$x=5$", "$x=3$", "$x=9$", "$x=7$"],
     answerIndex: 0,
-    explanation: "$log_2((x-1)(x-3))=3Rightarrow (x-1)(x-3)=8Rightarrow x^2-4x-5=0Rightarrow x=5,-1$; domain gives $x=5$.",
+    explanation: "$\\log_2((x-1)(x-3))=3\\Rightarrow (x-1)(x-3)=8\\Rightarrow x^2-4x-5=0\\Rightarrow x=5,-1$; domain gives $x=5$.",
   },
 
   {
@@ -1872,10 +1872,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Rational Expressions",
     difficulty: "hard",
     rigor: 3,
-    question: "Simplify $rac{x^2-4}{x^2-x-6}divrac{x+2}{x-3}$.",
-    choices: ["$rac{x-2}{x+2}$", "$rac{x+2}{x-2}$", "$1$", "$rac{x-3}{x+3}$"],
+    question: "Simplify $\\frac{x^2-4}{x^2-x-6}\\div\\frac{x+2}{x-3}$.",
+    choices: ["$\\frac{x-2}{x+2}$", "$\\frac{x+2}{x-2}$", "$1$", "$\\frac{x-3}{x+3}$"],
     answerIndex: 0,
-    explanation: "Factor and multiply by reciprocal: $rac{(x-2)(x+2)}{(x-3)(x+2)}cdotrac{x-3}{x+2}=rac{x-2}{x+2}$.",
+    explanation: "Factor and multiply by reciprocal: $\\frac{(x-2)(x+2)}{(x-3)(x+2)}\\cdot\\frac{x-3}{x+2}=\\frac{x-2}{x+2}$.",
   },
 
   {
@@ -1898,10 +1898,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Trigonometry",
     difficulty: "hard",
     rigor: 3,
-    question: "If $sin	heta=rac{5}{13}$ and $	heta$ is acute, find $	an	heta$.",
-    choices: ["$rac{5}{12}$", "$rac{12}{5}$", "$rac{13}{5}$", "$rac{5}{13}$"],
+    question: "If $\\sin\\theta=\\frac{5}{13}$ and $\\theta$ is acute, find $\\tan\\theta$.",
+    choices: ["$\\frac{5}{12}$", "$\\frac{12}{5}$", "$\\frac{13}{5}$", "$\\frac{5}{13}$"],
     answerIndex: 0,
-    explanation: "Use a 5-12-13 triangle, so $	an	heta=rac{opposite}{adjacent}=rac{5}{12}$.",
+    explanation: "Use a 5-12-13 triangle, so $\\tan\\theta=\\frac{\\text{opposite}}{\\text{adjacent}}=\\frac{5}{12}$.",
   },
 
   {
@@ -1925,9 +1925,9 @@ export const QUESTION_BANK: Question[] = [
     difficulty: "hard",
     rigor: 3,
     question: "Find the equation of the line perpendicular to $2x-3y=6$ passing through $(3,-1)$.",
-    choices: ["$y=-rac{3}{2}x+rac{7}{2}$", "$y=rac{3}{2}x-rac{11}{2}$", "$y=-rac{2}{3}x+1$", "$y=rac{2}{3}x-3$"],
+    choices: ["$y=-\\frac{3}{2}x+\\frac{7}{2}$", "$y=\\frac{3}{2}x-\\frac{11}{2}$", "$y=-\\frac{2}{3}x+1$", "$y=\\frac{2}{3}x-3$"],
     answerIndex: 0,
-    explanation: "Original slope is $rac{2}{3}$, perpendicular slope is $-rac{3}{2}$. Through $(3,-1)$ gives $y+1=-rac32(x-3)$.",
+    explanation: "Original slope is $\\frac{2}{3}$, perpendicular slope is $-\\frac{3}{2}$. Through $(3,-1)$ gives $y+1=-\\frac{3}{2}(x-3)$.",
   },
 
   {
@@ -1953,7 +1953,7 @@ export const QUESTION_BANK: Question[] = [
     question: "A right circular cone has radius 3 and height 4. Its volume is:",
     choices: ["$12pi$", "$36pi$", "$24pi$", "$16pi$"],
     answerIndex: 0,
-    explanation: "$V=rac13pi r^2h=rac13pi(9)(4)=12pi$.",
+    explanation: "$V=\\frac{1}{3}\\pi r^2h=\\frac{1}{3}\\pi(9)(4)=12\\pi$.",
   },
 
   {
@@ -1979,7 +1979,7 @@ export const QUESTION_BANK: Question[] = [
     question: "Two similar triangles have side ratio $3:5$. If the smaller area is 27, the larger area is:",
     choices: ["75", "45", "81", "125"],
     answerIndex: 0,
-    explanation: "Area scales by square of side ratio: $27cdot(rac{5}{3})^2=27cdotrac{25}{9}=75$.",
+    explanation: "Area scales by square of side ratio: $27\\cdot\\left(\\frac{5}{3}\\right)^2=27\\cdot\\frac{25}{9}=75$.",
   },
 
   {
@@ -2002,10 +2002,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Limits & Continuity",
     difficulty: "hard",
     rigor: 3,
-    question: "Evaluate $lim_{x	o0}rac{sin(3x)}{x}$.",
+    question: "Evaluate $\\lim_{x\\to0}\\frac{\\sin(3x)}{x}$.",
     choices: ["3", "0", "1", "Does not exist"],
     answerIndex: 0,
-    explanation: "Use $lim_{u	o0}rac{sin u}{u}=1$ with $u=3x$.",
+    explanation: "Use $\\lim_{u\\to0}\\frac{\\sin u}{u}=1$ with $u=3x$.",
   },
 
   {
@@ -2055,9 +2055,9 @@ export const QUESTION_BANK: Question[] = [
     difficulty: "hard",
     rigor: 3,
     question: "Compute $int x e^{x^2},dx$.",
-    choices: ["$rac12 e^{x^2}+C$", "$e^{x^2}+C$", "$xe^{x^2}+C$", "$rac12 x^2e^{x^2}+C$"],
+    choices: ["$\\frac{1}{2} e^{x^2}+C$", "$e^{x^2}+C$", "$xe^{x^2}+C$", "$\\frac{1}{2} x^2e^{x^2}+C$"],
     answerIndex: 0,
-    explanation: "Let $u=x^2$, $du=2x,dx$, so integral is $rac12int e^u du$.",
+    explanation: "Let $u=x^2$, $du=2x\\,dx$, so the integral is $\\frac{1}{2}\\int e^u\\,du$.",
   },
 
   {
@@ -2083,7 +2083,7 @@ export const QUESTION_BANK: Question[] = [
     question: "A rectangle under $y=12-x^2$ above the $x$-axis has width $2x$. Area $A(x)=2x(12-x^2)$. Max area occurs at:",
     choices: ["$x=2$", "$x=sqrt{6}$", "$x=3$", "$x=1$"],
     answerIndex: 0,
-    explanation: "$A'(x)=24-6x^2=0Rightarrow x=2$ (positive critical point in domain).",
+    explanation: "$A'(x)=24-6x^2=0\\Rightarrow x=2$ (positive critical point in domain).",
   },
 
   {
@@ -2262,10 +2262,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Parametric & Polar",
     difficulty: "hard",
     rigor: 3,
-    question: "For $x=t^2+1$, $y=t^3-t$, find $rac{dy}{dx}$ at $t=2$.",
-    choices: ["$rac{11}{4}$", "$rac{5}{2}$", "$rac{11}{2}$", "$rac{4}{11}$"],
+    question: "For $x=t^2+1$, $y=t^3-t$, find $\\frac{dy}{dx}$ at $t=2$.",
+    choices: ["$\\frac{11}{4}$", "$\\frac{5}{2}$", "$\\frac{11}{2}$", "$\\frac{4}{11}$"],
     answerIndex: 0,
-    explanation: "$rac{dy}{dx}=rac{dy/dt}{dx/dt}=rac{3t^2-1}{2t}$; at $t=2$, value is $rac{11}{4}$.",
+    explanation: "$\\frac{dy}{dx}=\\frac{dy/dt}{dx/dt}=\\frac{3t^2-1}{2t}$; at $t=2$, value is $\\frac{11}{4}$.",
   },
 
   {
@@ -2288,7 +2288,7 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Infinite Series",
     difficulty: "medium",
     rigor: 2,
-    question: "Determine convergence of $sum_{n=1}^{infty}rac{1}{n^2}$.",
+    question: "Determine convergence of $\\sum_{n=1}^{\\infty}\\frac{1}{n^2}$.",
     choices: ["Convergent", "Divergent", "Conditionally convergent only", "Oscillatory"],
     answerIndex: 0,
     explanation: "It is a p-series with $p=2>1$, so it converges.",
@@ -2340,10 +2340,10 @@ export const QUESTION_BANK: Question[] = [
     subtopic: "Logistic Growth",
     difficulty: "hard",
     rigor: 3,
-    question: "In $P(t)=rac{K}{1+Ae^{-rt}}$, as $t	oinfty$, $P(t)$ approaches:",
+    question: "In $P(t)=\\frac{K}{1+Ae^{-rt}}$, as $t\\to\\infty$, $P(t)$ approaches:",
     choices: ["$K$", "0", "$A$", "$r$"],
     answerIndex: 0,
-    explanation: "Since $e^{-rt}	o0$, denominator tends to 1 and $P(t)	o K$.",
+    explanation: "Since $e^{-rt}\\to0$, denominator tends to 1 and $P(t)\\to K$.",
   },
 
   {
