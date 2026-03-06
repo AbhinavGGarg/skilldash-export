@@ -32,7 +32,9 @@ function ActiveQuizContent() {
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
+  const [typedAnswer, setTypedAnswer] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isCorrectSubmission, setIsCorrectSubmission] = useState<boolean | null>(null);
   const [score, setScore] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -119,9 +121,13 @@ function ActiveQuizContent() {
       return { nextQ: null, exhausted: true };
     }
 
-    // Step 9: Prevent immediate back-to-back repeats when alternatives exist.
+    // Step 9: Prioritize higher-quality non-supplemental questions before support-pack items.
+    const primaryPool = pool.filter((q) => !q.id.startsWith("sup-"));
+    const rankedPool = primaryPool.length > 0 ? primaryPool : pool;
+
+    // Step 10: Prevent immediate back-to-back repeats when alternatives exist.
     const lastUsedId = currentUsedIds[currentUsedIds.length - 1];
-    const nonImmediateRepeatPool = pool.length > 1 ? pool.filter((q) => q.id !== lastUsedId) : pool;
+    const nonImmediateRepeatPool = rankedPool.length > 1 ? rankedPool.filter((q) => q.id !== lastUsedId) : rankedPool;
     const nextQ = nonImmediateRepeatPool[Math.floor(Math.random() * nonImmediateRepeatPool.length)];
 
     return { nextQ, exhausted: false };
@@ -157,6 +163,25 @@ function ActiveQuizContent() {
   );
 
   const progress = (currentIndex / targetCount) * 100;
+  const isInputQuestion = currentQuestion.responseType === "input";
+
+  const isTypedAnswerCorrect = () => {
+    if (!currentQuestion) return false;
+    const answer = typedAnswer.trim();
+    if (!answer) return false;
+
+    if (typeof currentQuestion.numericAnswer === "number") {
+      const parsed = Number(answer);
+      if (Number.isNaN(parsed)) return false;
+      const tolerance = currentQuestion.tolerance ?? 0;
+      return Math.abs(parsed - currentQuestion.numericAnswer) <= tolerance;
+    }
+
+    const normalize = (s: string) => s.trim().toLowerCase().replace(/\s+/g, "");
+    const accepted = currentQuestion.acceptedAnswers ?? [];
+    if (accepted.length === 0) return false;
+    return accepted.some((a) => normalize(a) === normalize(answer));
+  };
 
   const handleOptionSelect = (idx: number) => {
     if (isSubmitted) return;
@@ -164,8 +189,14 @@ function ActiveQuizContent() {
   };
 
   const handleSubmit = () => {
-    if (selectedAnswerIndex === null || isSubmitted) return;
-    if (selectedAnswerIndex === currentQuestion.answerIndex) setScore(s => s + 1);
+    if (isSubmitted) return;
+    const isCorrect = isInputQuestion
+      ? isTypedAnswerCorrect()
+      : selectedAnswerIndex !== null && selectedAnswerIndex === currentQuestion.answerIndex;
+    if (!isInputQuestion && selectedAnswerIndex === null) return;
+    if (isInputQuestion && !typedAnswer.trim()) return;
+    if (isCorrect) setScore(s => s + 1);
+    setIsCorrectSubmission(isCorrect);
     setIsSubmitted(true);
   };
 
@@ -178,7 +209,9 @@ function ActiveQuizContent() {
         persistSeenId(result.nextQ.id);
         setCurrentIndex(c => c + 1);
         setSelectedAnswerIndex(null);
+        setTypedAnswer("");
         setIsSubmitted(false);
+        setIsCorrectSubmission(null);
       } else {
         const attempted = currentIndex + 1;
         startTransition(() => {
@@ -227,7 +260,7 @@ function ActiveQuizContent() {
           </CardHeader>
           <CardContent className="p-10 space-y-8">
             <div className="grid gap-4">
-              {currentQuestion.choices.map((choice, idx) => {
+              {!isInputQuestion && currentQuestion.choices.map((choice, idx) => {
                 const isCorrect = isSubmitted && idx === currentQuestion.answerIndex;
                 const isWrong = isSubmitted && selectedAnswerIndex === idx && idx !== currentQuestion.answerIndex;
                 const isSelected = selectedAnswerIndex === idx;
@@ -252,12 +285,24 @@ function ActiveQuizContent() {
                   </button>
                 );
               })}
+              {isInputQuestion && (
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-foreground/80">Type your answer</label>
+                  <input
+                    value={typedAnswer}
+                    onChange={(e) => setTypedAnswer(e.target.value)}
+                    disabled={isSubmitted || isPending}
+                    className="w-full rounded-xl border-2 border-muted/60 px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    placeholder="Enter final answer"
+                  />
+                </div>
+              )}
             </div>
 
             {!isSubmitted ? (
               <Button 
                 className="w-full h-14 text-lg rounded-xl shadow-sm mt-4 font-headline" 
-                disabled={selectedAnswerIndex === null}
+                disabled={isInputQuestion ? !typedAnswer.trim() : selectedAnswerIndex === null}
                 onClick={handleSubmit}
               >
                 Confirm Answer
@@ -266,16 +311,30 @@ function ActiveQuizContent() {
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300 text-left">
                 <div className={cn(
                   "p-6 rounded-xl flex gap-4 border-2",
-                  selectedAnswerIndex === currentQuestion.answerIndex ? "bg-primary/5 border-primary/20 text-primary" : "bg-destructive/5 border-destructive/10 text-destructive"
+                  isCorrectSubmission ? "bg-primary/5 border-primary/20 text-primary" : "bg-destructive/5 border-destructive/10 text-destructive"
                 )}>
-                  {selectedAnswerIndex === currentQuestion.answerIndex ? <Check className="h-6 w-6 mt-1" /> : <X className="h-6 w-6 mt-1" />}
+                  {isCorrectSubmission ? <Check className="h-6 w-6 mt-1" /> : <X className="h-6 w-6 mt-1" />}
                   <div>
                     <h4 className="text-xl font-headline">
-                      {selectedAnswerIndex === currentQuestion.answerIndex ? "Correct Analysis" : "Concept Re-analysis"}
+                      {isCorrectSubmission ? "Correct Analysis" : "Concept Re-analysis"}
                     </h4>
-                    {selectedAnswerIndex !== currentQuestion.answerIndex && (
+                    {!isCorrectSubmission && !isInputQuestion && (
                       <div className="mt-1 text-sm font-medium">
                         The correct response is <MathText text={currentQuestion.choices[currentQuestion.answerIndex]} className="inline font-bold" />.
+                      </div>
+                    )}
+                    {!isCorrectSubmission && isInputQuestion && (
+                      <div className="mt-1 text-sm font-medium">
+                        Accepted answer:{" "}
+                        <MathText
+                          text={
+                            typeof currentQuestion.numericAnswer === "number"
+                              ? String(currentQuestion.numericAnswer)
+                              : (currentQuestion.acceptedAnswers?.[0] || "See explanation")
+                          }
+                          className="inline font-bold"
+                        />
+                        .
                       </div>
                     )}
                   </div>
