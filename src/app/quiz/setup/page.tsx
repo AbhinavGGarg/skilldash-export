@@ -206,7 +206,7 @@ function QuizSetupContent() {
                     variant="outline"
                     onClick={() =>
                       router.push(
-                        `/learn?subject=${encodeURIComponent(selectedCourse)}&subtopic=${encodeURIComponent(selectedSubtopic)}`
+                        `/learn/active?subject=${encodeURIComponent(selectedCourse)}&subtopic=${encodeURIComponent(selectedSubtopic)}`
                       )
                     }
                   >

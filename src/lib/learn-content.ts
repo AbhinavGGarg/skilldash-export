@@ -1,200 +1,400 @@
-import { ACTIVE_QUESTION_BANK } from "@/lib/questions-data";
-import { getCourseByName, getGroupNameForCourse } from "@/lib/course-catalog";
+import { ACTIVE_QUESTION_BANK, Question } from "@/lib/questions-data";
+import { getGroupNameForCourse } from "@/lib/course-catalog";
 
-type LearnGuide = {
+export type WorkedExample = {
+  id: string;
+  question: string;
+  solution: string;
+  difficulty: "easy" | "medium" | "hard";
+  answerPreview: string;
+};
+
+export type RetrievalDrill = {
+  prompt: string;
+  answer: string;
+};
+
+export type LearnPacket = {
   title: string;
+  unitLabel: string;
   overview: string;
-  keyMoves: string[];
-  commonMistakes: string[];
+  examUse: string;
+  keyIdeas: string[];
+  keySteps: string[];
+  memorySheet: string[];
+  commonTraps: string[];
+  workedExamples: WorkedExample[];
+  retrievalDrills: RetrievalDrill[];
   studyPlan: string[];
-  checkpoints: string[];
-  samplePrompts: string[];
 };
 
-const DOMAIN_MOVES: Record<string, string[]> = {
+const DOMAIN_OVERVIEW: Record<string, string> = {
+  Mathematics:
+    "This unit is scored on procedural accuracy plus interpretation. You need setup, execution, and validation under timed pressure.",
+  Science:
+    "This unit is scored on claim-evidence-reasoning quality. You need causal logic, variable control, and data interpretation.",
+  "Social Studies":
+    "This unit is scored on argument quality with evidence. You need contextualization, source analysis, and defensible reasoning.",
+  Technology:
+    "This unit is scored on correctness and design quality. You need robust logic, edge-case handling, and clear justification.",
+  Languages:
+    "This unit is scored on meaning precision and grammar control. You need accurate form, coherent expression, and context-appropriate language.",
+  General:
+    "This unit is scored on whether your reasoning is complete, evidence-backed, and checked for errors."
+};
+
+const DOMAIN_STEPS: Record<string, string[]> = {
   Mathematics: [
-    "Translate the problem into symbols before computing anything.",
-    "State domain/constraint conditions first so invalid steps are caught early.",
-    "Keep symbolic work exact until the final line, then interpret in context.",
-    "Back-check final answers by substitution and reasonableness."
+    "Identify givens, unknowns, and constraints before computing.",
+    "Choose the method that matches structure (algebraic, graphical, numerical, or calculus-based).",
+    "Execute symbolically, then check domain/sign/unit conditions.",
+    "Interpret the final value in context, not just as a raw number."
   ],
   Science: [
-    "Separate claim, evidence, and mechanism in every explanation.",
-    "Track variables, controls, and confounders before evaluating conclusions.",
-    "Connect micro-level processes to macro-level outcomes.",
-    "Use data trends and uncertainty language, not absolute claims."
+    "Write the claim and exactly what evidence supports it.",
+    "Track variables: manipulated, measured, controlled, and confounded.",
+    "Evaluate mechanism strength and alternative explanations.",
+    "State confidence level with uncertainty and limits."
   ],
   "Social Studies": [
-    "Anchor claims to specific evidence and historical/economic context.",
-    "Compare at least two plausible explanations before choosing one.",
-    "Identify assumptions, incentives, and trade-offs explicitly.",
-    "Distinguish correlation from causation in policy or event analysis."
+    "State the thesis with historical/economic context.",
+    "Use specific evidence and source quality checks.",
+    "Compare alternatives and address counterevidence.",
+    "Conclude with causal logic and trade-offs."
   ],
   Technology: [
-    "Define input/output contracts before writing or tracing logic.",
-    "Trace edge cases first, then nominal cases.",
-    "Analyze runtime or design trade-offs instead of only final output.",
-    "Validate with test cases that include boundary behavior."
+    "Define input/output contract and constraints.",
+    "Trace logic on normal and edge cases.",
+    "Evaluate time/space trade-offs and failure paths.",
+    "Validate with targeted tests before finalizing."
   ],
   Languages: [
-    "Prioritize meaning and precision over literal word-by-word translation.",
-    "Select tense, agreement, and register based on context clues.",
-    "Check cohesion using connectors and transition logic.",
-    "Revise for grammar after confirming intent and nuance."
+    "Determine communicative intent and register first.",
+    "Select tense/agreement/syntax to match context.",
+    "Refine connectors and transitions for coherence.",
+    "Proofread for form accuracy and nuance."
   ],
   General: [
-    "Define what is being asked and what evidence is available.",
-    "Apply the correct framework before choosing an answer.",
-    "Check assumptions and constraints before finalizing.",
-    "Explain why alternatives are weaker, not only why one is right."
+    "Clarify what is asked.",
+    "Apply the right framework.",
+    "Check assumptions.",
+    "Verify final answer independently."
   ]
 };
 
-const DOMAIN_MISTAKES: Record<string, string[]> = {
+const DOMAIN_TRAPS: Record<string, string[]> = {
   Mathematics: [
-    "Dropping domain restrictions after algebraic manipulation.",
-    "Switching formulas without checking whether assumptions hold.",
-    "Rounding too early and propagating error.",
-    "Stopping at a symbolic result without interpreting units or context."
+    "Solving correctly but not checking domain restrictions.",
+    "Using a familiar formula outside its assumptions.",
+    "Rounding too early and creating downstream error.",
+    "Stopping before interpreting units or context."
   ],
   Science: [
-    "Treating one strong study as universal without replication.",
-    "Confusing association with causal mechanism.",
-    "Ignoring measurement limitations or sample bias.",
-    "Overstating certainty when evidence is mixed."
+    "Treating one result as universal without replication.",
+    "Confusing correlation with causation.",
+    "Ignoring sample bias or measurement error.",
+    "Overstating certainty from limited evidence."
   ],
   "Social Studies": [
-    "Using confident language without source quality checks.",
-    "Ignoring counterevidence that weakens a claim.",
-    "Flattening complex systems into one-factor explanations.",
-    "Applying modern assumptions to past contexts without adjustment."
+    "Using broad claims without concrete evidence.",
+    "Ignoring counterexamples that weaken the argument.",
+    "Projecting modern assumptions into past contexts.",
+    "Choosing narrative confidence over source quality."
   ],
   Technology: [
-    "Optimizing for one case while breaking edge behavior.",
-    "Assuming code works without trace-based verification.",
-    "Ignoring data structure constraints during design choices.",
-    "Confusing syntax correctness with algorithmic correctness."
+    "Passing basic cases but failing edge cases.",
+    "Assuming code is correct without trace-based checks.",
+    "Ignoring complexity bottlenecks.",
+    "Confusing syntactic validity with algorithmic correctness."
   ],
   Languages: [
-    "Choosing grammar that is technically valid but contextually wrong.",
-    "Literal translation that loses register or intent.",
-    "Ignoring agreement/gender/number in complex sentences.",
-    "Using repetitive structure when nuance is required."
+    "Literal translation that breaks intended meaning.",
+    "Correct vocabulary with wrong register or tense.",
+    "Agreement errors in longer structures.",
+    "Weak cohesion from missing transitions."
   ],
   General: [
-    "Relying on intuition without validating with evidence.",
-    "Skipping constraint checks.",
-    "Choosing the first plausible answer without comparing alternatives.",
-    "Not reviewing errors to identify a repeatable fix."
+    "Choosing first plausible option without comparison.",
+    "Skipping validation.",
+    "Ignoring assumptions.",
+    "No post-error review."
   ]
 };
 
-const DOMAIN_CHECKPOINTS: Record<string, string[]> = {
-  Mathematics: [
-    "Did I define variables and constraints before solving?",
-    "Did I verify sign, domain, and units at the end?",
-    "Could a different method yield the same result?",
-    "Is the magnitude of my result reasonable for the context?"
-  ],
-  Science: [
-    "What variable is manipulated, measured, and controlled?",
-    "What evidence directly supports the claim?",
-    "What alternative mechanism could also explain the result?",
-    "How would replication or a larger sample change confidence?"
-  ],
-  "Social Studies": [
-    "Which source is strongest and why?",
-    "What assumptions does this argument require?",
-    "Who benefits or loses under this interpretation/policy?",
-    "What counterexample would most challenge my conclusion?"
-  ],
-  Technology: [
-    "What are edge cases for this input space?",
-    "What is the time/space complexity bottleneck?",
-    "How would I test this in three minimal cases?",
-    "Does the solution satisfy both correctness and maintainability?"
-  ],
-  Languages: [
-    "Does this tense/aspect match time context?",
-    "Is subject-verb and noun-adjective agreement correct?",
-    "Does wording match formal/informal register requirements?",
-    "Could a native reader infer a different meaning than intended?"
-  ],
-  General: [
-    "What is the strongest evidence available?",
-    "What assumption is most fragile?",
-    "What is one plausible competing explanation?",
-    "How can I verify the final answer independently?"
-  ]
-};
+const UNIT_REFERENCE: Array<{ match: string[]; notes: string[] }> = [
+  {
+    match: ["linear equations"],
+    notes: [
+      "Standard form: ax + b = c; isolate variable with inverse operations.",
+      "Word problems: define variable first, then translate sentence-by-sentence.",
+      "Always check by substitution into original equation."
+    ]
+  },
+  {
+    match: ["linear inequalities"],
+    notes: [
+      "When multiplying/dividing by a negative, reverse inequality direction.",
+      "Use interval language and boundary inclusion correctly.",
+      "Validate with a test value in each region."
+    ]
+  },
+  {
+    match: ["systems of equations"],
+    notes: [
+      "Choose substitution for isolated forms; elimination for aligned coefficients.",
+      "After solving one variable, back-substitute and verify both equations.",
+      "Identify special cases: no solution or infinitely many solutions."
+    ]
+  },
+  {
+    match: ["quadratic", "parabola"],
+    notes: [
+      "Use factoring, completing square, or quadratic formula based on structure.",
+      "Discriminant b^2 - 4ac classifies root behavior.",
+      "Vertex/axis form supports interpretation of maxima/minima."
+    ]
+  },
+  {
+    match: ["logarithm"],
+    notes: [
+      "Domain rule: log input must be strictly positive.",
+      "Convert between exponential and logarithmic forms fluently.",
+      "Apply product/quotient/power rules only when domain is valid."
+    ]
+  },
+  {
+    match: ["trigonometry", "polar", "parametric"],
+    notes: [
+      "Track angle units (radians vs degrees) consistently.",
+      "Use identities strategically, not mechanically.",
+      "Check periodicity and principal values in inverse trig contexts."
+    ]
+  },
+  {
+    match: ["limits", "continuity"],
+    notes: [
+      "Evaluate direct substitution first, then algebraic simplification if indeterminate.",
+      "Distinguish removable, jump, and infinite discontinuities.",
+      "One-sided limits determine overall limit existence."
+    ]
+  },
+  {
+    match: ["derivative"],
+    notes: [
+      "Derivative represents instantaneous rate of change and local slope.",
+      "Use product/quotient/chain rules with clean structure and parentheses.",
+      "Interpret sign of f' and f'' for monotonicity and concavity."
+    ]
+  },
+  {
+    match: ["integration", "area", "volume"],
+    notes: [
+      "Antiderivative + constant for indefinite integrals; bounds for definite integrals.",
+      "FTC links accumulation to derivative and net change.",
+      "For volume methods, define slices clearly and keep units cubic."
+    ]
+  },
+  {
+    match: ["inference", "chi-square", "regression", "probability"],
+    notes: [
+      "State hypotheses and conditions before calculation.",
+      "Interpret p-value/context rather than memorizing thresholds.",
+      "For regression, assess assumptions using residual behavior."
+    ]
+  },
+  {
+    match: ["cell", "genetics", "evolution", "ecology", "biology"],
+    notes: [
+      "Connect structure to function at molecular and system scales.",
+      "Explain mechanisms with evidence rather than isolated facts.",
+      "Use experimental design language: control, variable, replication."
+    ]
+  },
+  {
+    match: ["chem", "stoichiometry", "equilibrium", "kinetics", "thermodynamics", "electrochem"],
+    notes: [
+      "Track units and significant quantities every step.",
+      "Identify driving forces (energy, entropy, concentration, potential).",
+      "Separate equilibrium position from reaction rate logic."
+    ]
+  },
+  {
+    match: ["history", "civilization", "wars", "empire", "industrial"],
+    notes: [
+      "Frame periodization and causation before evidence selection.",
+      "Use primary/secondary sources with provenance checks.",
+      "Differentiate trigger events from long-run structural causes."
+    ]
+  },
+  {
+    match: ["government", "constitution", "policy", "federalism", "civil liberties"],
+    notes: [
+      "Identify institution powers and limits before evaluating outcomes.",
+      "Use constitutional principle + precedent + consequence structure.",
+      "Compare competing interpretations with explicit assumptions."
+    ]
+  },
+  {
+    match: ["economics", "market", "macro", "micro", "stabilization", "income", "financial"],
+    notes: [
+      "Use model assumptions explicitly (ceteris paribus, time horizon, openness).",
+      "Separate short-run from long-run effects and distributional impacts.",
+      "Track equilibrium shifts with labeled causal chains."
+    ]
+  },
+  {
+    match: ["computer", "recursion", "array", "sorting", "object", "inheritance", "logic"],
+    notes: [
+      "Reason with invariants and edge-case tests.",
+      "For recursion, define base case and measure progress toward it.",
+      "Justify data structure/algorithm choices using constraints."
+    ]
+  },
+  {
+    match: ["spanish", "syntax", "tense", "vocabulary", "literary"],
+    notes: [
+      "Choose tense/mood by communicative intent and timeframe.",
+      "Maintain agreement and register consistency.",
+      "Use transitions to strengthen coherence and interpretation."
+    ]
+  }
+];
+
+function normalize(value: string): string {
+  return value.trim().toLowerCase();
+}
 
 function stripLatex(text: string): string {
-  return text.replace(/\$+/g, "").replace(/\\[a-zA-Z]+/g, "").replace(/\s+/g, " ").trim();
+  return text
+    .replace(/\$+/g, "")
+    .replace(/\\(frac|cdot|times|left|right|le|ge|neq|approx|to|rightarrow|implies)/g, "")
+    .replace(/[{}]/g, "")
+    .replace(/\\/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
-export function buildLearnGuide(subject: string, subtopic: string): LearnGuide {
-  const normalizedSubject = subject.trim().toLowerCase();
-  const normalizedSubtopic = subtopic.trim().toLowerCase();
-  const group = getGroupNameForCourse(subject);
-  const course = getCourseByName(subject);
-  const unitLabel = subtopic === "All Topics" ? "Comprehensive Review" : subtopic;
+function getAnswerPreview(question: Question): string {
+  if (question.responseType === "input") {
+    if (typeof question.numericAnswer === "number") return `${question.numericAnswer}`;
+    if (question.acceptedAnswers && question.acceptedAnswers.length > 0) return question.acceptedAnswers[0];
+    return "Constructed response";
+  }
+  return question.choices[question.answerIndex] ?? "See solution";
+}
 
-  const questionPool = ACTIVE_QUESTION_BANK.filter((q) => {
-    const subjectMatch = q.subject.trim().toLowerCase() === normalizedSubject;
-    if (!subjectMatch) return false;
-    if (subtopic === "All Topics") return true;
-    return q.subtopic.trim().toLowerCase() === normalizedSubtopic;
-  });
-
-  const samplePrompts = Array.from(
-    new Set(
-      questionPool
-        .map((q) => stripLatex(q.question))
-        .filter((q) => q.length > 0)
-    )
-  ).slice(0, 4);
-
-  const keyMoves = DOMAIN_MOVES[group] ?? DOMAIN_MOVES.General;
-  const commonMistakes = DOMAIN_MISTAKES[group] ?? DOMAIN_MISTAKES.General;
-  const checkpoints = DOMAIN_CHECKPOINTS[group] ?? DOMAIN_CHECKPOINTS.General;
-
-  const studyPlan = [
-    `Warm-up (10 min): review core definitions and notation for ${unitLabel}.`,
-    "Concept pass (20 min): solve 3-5 representative problems while writing each reasoning step.",
-    "Error pass (15 min): revisit every miss and classify the failure type (concept, setup, execution, interpretation).",
-    "Mastery pass (10 min): explain one hard problem out loud without notes."
+function pickWorkedExamples(pool: Question[]): WorkedExample[] {
+  const byDifficulty: Array<Question | undefined> = [
+    pool.find((q) => q.difficulty === "easy"),
+    pool.find((q) => q.difficulty === "medium"),
+    pool.find((q) => q.difficulty === "hard")
   ];
 
-  const overview =
+  const seeded = byDifficulty.filter((q): q is Question => Boolean(q));
+  const fallback = pool.filter((q) => !seeded.some((s) => s.id === q.id)).slice(0, Math.max(0, 3 - seeded.length));
+
+  return [...seeded, ...fallback].slice(0, 3).map((q) => ({
+    id: q.id,
+    question: q.question,
+    solution: q.explanation,
+    difficulty: q.difficulty,
+    answerPreview: getAnswerPreview(q)
+  }));
+}
+
+function makeRetrievalDrills(subject: string, subtopic: string, examples: WorkedExample[]): RetrievalDrill[] {
+  const unit = subtopic === "All Topics" ? `${subject} comprehensive review` : `${subject} - ${subtopic}`;
+  const drills: RetrievalDrill[] = [
+    {
+      prompt: `In 2-3 sentences, define what mastery looks like in ${unit}.`,
+      answer: "Mastery means selecting the correct framework, executing accurately, and validating the result with constraints/evidence/context."
+    },
+    {
+      prompt: `List 3 mistakes you must avoid in ${unit}.`,
+      answer: "Avoid assumption mismatch, skipped validation, and context-free final answers."
+    }
+  ];
+
+  examples.slice(0, 2).forEach((example, idx) => {
+    drills.push({
+      prompt: `Drill ${idx + 1}: Without looking, solve this prompt skeleton from memory: ${stripLatex(example.question).slice(0, 130)}...`,
+      answer: `Target result: ${stripLatex(example.answerPreview)}. Full method: ${stripLatex(example.solution)}`
+    });
+  });
+
+  return drills;
+}
+
+function getMemorySheet(subject: string, subtopic: string, group: string): string[] {
+  const haystack = `${normalize(subject)} ${normalize(subtopic)}`;
+  const matched = UNIT_REFERENCE.filter((entry) => entry.match.some((key) => haystack.includes(key)));
+
+  if (matched.length === 0) {
+    if (group === "Mathematics") {
+      return [
+        "Write constraints first (domain, intervals, signs, units).",
+        "Keep symbolic steps clean; defer rounding.",
+        "Substitute back to verify validity."
+      ];
+    }
+    if (group === "Science") {
+      return [
+        "Use claim-evidence-reasoning structure.",
+        "Track variable roles and confounders.",
+        "State uncertainty and scope."
+      ];
+    }
+    return [
+      "Anchor claims to evidence.",
+      "Check assumptions before conclusions.",
+      "Use explicit reasoning links (because/therefore/however)."
+    ];
+  }
+
+  return Array.from(new Set(matched.flatMap((entry) => entry.notes))).slice(0, 6);
+}
+
+export function buildLearnPacket(subject: string, subtopic: string): LearnPacket {
+  const group = getGroupNameForCourse(subject);
+  const titleUnit = subtopic === "All Topics" ? "Comprehensive Review" : subtopic;
+
+  const subjectPool = ACTIVE_QUESTION_BANK.filter((q) => normalize(q.subject) === normalize(subject));
+  const scopedPool =
     subtopic === "All Topics"
-      ? `This guide covers all verified units in ${subject}. Focus on transferable reasoning patterns first, then rotate through unit-specific drills.`
-      : `This guide targets ${unitLabel} in ${subject}. Use it to build concept clarity, reduce repeat errors, and improve exam-level execution.`;
+      ? subjectPool
+      : subjectPool.filter((q) => normalize(q.subtopic) === normalize(subtopic));
+
+  const examplePool = scopedPool.length > 0 ? scopedPool : subjectPool;
+  const workedExamples = pickWorkedExamples(examplePool);
+  const retrievalDrills = makeRetrievalDrills(subject, subtopic, workedExamples);
+
+  const keyIdeas = [
+    `Core objective: solve ${titleUnit} tasks with complete reasoning, not just final answers.`,
+    `Unit alignment: questions test method selection, execution quality, and interpretation in ${subject}.`,
+    `Scoring focus: correct setup + valid assumptions + verified conclusion.`
+  ];
+
+  const studyPlan = [
+    "10 min: read memory sheet and restate each point in your own words.",
+    "20 min: work the 3 examples below step-by-step on paper, then compare to solutions.",
+    "10 min: complete retrieval drills without notes.",
+    "10 min: start a 5-10 question practice set and log every miss by error type."
+  ];
 
   return {
-    title: `${subject} • ${unitLabel}`,
-    overview,
-    keyMoves,
-    commonMistakes,
-    studyPlan,
-    checkpoints,
-    samplePrompts
+    title: `${subject} • ${titleUnit}`,
+    unitLabel: titleUnit,
+    overview: DOMAIN_OVERVIEW[group] ?? DOMAIN_OVERVIEW.General,
+    examUse:
+      subtopic === "All Topics"
+        ? `Use this as your pre-test review room for all ${subject} units. Rotate through each unit after finishing the recall drills.`
+        : `Use this room to review ${titleUnit} deeply, then transition directly into timed practice for this same unit.`,
+    keyIdeas,
+    keySteps: DOMAIN_STEPS[group] ?? DOMAIN_STEPS.General,
+    memorySheet: getMemorySheet(subject, subtopic, group),
+    commonTraps: DOMAIN_TRAPS[group] ?? DOMAIN_TRAPS.General,
+    workedExamples,
+    retrievalDrills,
+    studyPlan
   };
-}
-
-export function listUnitsForCourse(subject: string): string[] {
-  const course = getCourseByName(subject);
-  if (!course) return [];
-  return course.subtopics;
-}
-
-export function listCoursesForGroup(groupName: string): string[] {
-  return (
-    {
-      Mathematics: ["Algebra 1", "Algebra 2", "Geometry", "Calculus", "AP Calculus AB", "AP Calculus BC", "AP Statistics"],
-      Science: ["Biology", "AP Biology", "Chemistry", "AP Chemistry", "Environmental Science", "AP Environmental Science"],
-      "Social Studies": ["World History", "AP World History", "US Government", "AP US Government", "Economics", "AP Macroeconomics", "AP Microeconomics"],
-      Technology: ["Computer Science", "AP Computer Science A"],
-      Languages: ["Spanish", "AP Spanish"]
-    }[groupName] ?? []
-  );
 }
