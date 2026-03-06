@@ -21,6 +21,10 @@ function ActiveQuizContent() {
   const selectedSubtopic = useMemo(() => searchParams.get('subtopic') || "All Topics", [searchParams]);
   const selectedDifficulty = useMemo(() => (searchParams.get('difficulty')?.toLowerCase() || "medium") as "easy" | "medium" | "hard", [searchParams]);
   const targetCount = useMemo(() => parseInt(searchParams.get('count') || "5"), [searchParams]);
+  const historyKey = useMemo(() => {
+    const normalize = (s: string) => s?.trim().toLowerCase() || "";
+    return `quiz_seen_ids:${normalize(selectedSubject)}:${normalize(selectedSubtopic)}:${normalize(selectedDifficulty)}`;
+  }, [selectedSubject, selectedSubtopic, selectedDifficulty]);
 
   // Selection Engine State
   const [usedQuestionIds, setUsedQuestionIds] = useState<string[]>([]);
@@ -31,6 +35,29 @@ function ActiveQuizContent() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [score, setScore] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+
+  const getSeenIds = useCallback((): Set<string> => {
+    if (typeof window === "undefined") return new Set();
+    try {
+      const raw = window.localStorage.getItem(historyKey);
+      if (!raw) return new Set();
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? new Set(parsed) : new Set();
+    } catch {
+      return new Set();
+    }
+  }, [historyKey]);
+
+  const persistSeenId = useCallback((id: string) => {
+    if (typeof window === "undefined") return;
+    try {
+      const seen = getSeenIds();
+      seen.add(id);
+      window.localStorage.setItem(historyKey, JSON.stringify([...seen]));
+    } catch {
+      // no-op: localStorage should not block quiz flow
+    }
+  }, [getSeenIds, historyKey]);
 
   // Normalized Filtering and Selection Engine
   const getNextQuestion = useCallback((currentUsedIds: string[]) => {
@@ -75,16 +102,23 @@ function ActiveQuizContent() {
     // Step 5: Remove already-used questions
     const unused = filtered.filter(q => !currentUsedIds.includes(q.id));
 
-    // Step 6: If all used, reset within the same filtered pool.
-    const pool = unused.length > 0 ? unused : filtered;
+    // Step 6: Prefer unseen questions from previous sessions to reduce cross-session repetition.
+    const seenIds = getSeenIds();
+    const unseenAcrossSessions = unused.filter((q) => !seenIds.has(q.id));
+    const pool = unseenAcrossSessions.length > 0 ? unseenAcrossSessions : unused;
 
-    // Step 7: Prevent immediate back-to-back repeats when alternatives exist.
+    // Step 7: Never repeat within the same session; if exhausted, end session early.
+    if (pool.length === 0) {
+      return { nextQ: null, exhausted: true };
+    }
+
+    // Step 8: Prevent immediate back-to-back repeats when alternatives exist.
     const lastUsedId = currentUsedIds[currentUsedIds.length - 1];
     const nonImmediateRepeatPool = pool.length > 1 ? pool.filter((q) => q.id !== lastUsedId) : pool;
     const nextQ = nonImmediateRepeatPool[Math.floor(Math.random() * nonImmediateRepeatPool.length)];
 
-    return { nextQ, usedWasReset: unused.length === 0 };
-  }, [selectedSubject, selectedSubtopic, selectedDifficulty]);
+    return { nextQ, exhausted: false };
+  }, [selectedSubject, selectedSubtopic, selectedDifficulty, getSeenIds]);
 
   // Initial Load
   useEffect(() => {
@@ -92,9 +126,10 @@ function ActiveQuizContent() {
     if (result?.nextQ) {
       setCurrentQuestion(result.nextQ);
       setUsedQuestionIds([result.nextQ.id]);
+      persistSeenId(result.nextQ.id);
     }
     setIsLoading(false);
-  }, [getNextQuestion]);
+  }, [getNextQuestion, persistSeenId]);
 
   if (isLoading) return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] worksheet-bg text-center space-y-4">
@@ -132,10 +167,16 @@ function ActiveQuizContent() {
       const result = getNextQuestion(usedQuestionIds);
       if (result?.nextQ) {
         setCurrentQuestion(result.nextQ);
-        setUsedQuestionIds(prev => result.usedWasReset ? [result.nextQ.id] : [...prev, result.nextQ.id]);
+        setUsedQuestionIds(prev => [...prev, result.nextQ.id]);
+        persistSeenId(result.nextQ.id);
         setCurrentIndex(c => c + 1);
         setSelectedAnswerIndex(null);
         setIsSubmitted(false);
+      } else {
+        const attempted = currentIndex + 1;
+        startTransition(() => {
+          router.push(`/quiz/results?score=${score}&total=${attempted}&subject=${encodeURIComponent(selectedSubject)}&difficulty=${selectedDifficulty}`);
+        });
       }
     } else {
       startTransition(() => {
