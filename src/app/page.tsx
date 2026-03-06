@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { 
-  Calculator, FlaskConical, BookOpen, Globe, Cpu, 
-  ArrowRight, Book, Target, TrendingUp, GraduationCap 
+import {
+  Calculator, FlaskConical, Globe, Cpu,
+  ArrowRight, Book, Target, TrendingUp, GraduationCap, Brain
 } from "lucide-react";
 
 export default function Home() {
@@ -33,6 +33,11 @@ export default function Home() {
             <Link href="/quiz/setup">
               <Button size="lg" className="px-8 h-14 rounded-xl text-lg shadow-sm">
                 Open a Topic <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="/learn">
+              <Button size="lg" variant="outline" className="px-8 h-14 rounded-xl text-lg bg-white/70">
+                Learn by Unit <Brain className="ml-2 h-5 w-5" />
               </Button>
             </Link>
             <Link href="/register">

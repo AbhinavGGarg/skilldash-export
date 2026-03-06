@@ -9,67 +9,20 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   Calculator, FlaskConical, BookOpen, History, Cpu,
-  Loader2, ChevronRight, Check, GraduationCap
+  Loader2, ChevronRight, Check, GraduationCap, Brain
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { SUBJECT_GROUPS } from "@/lib/course-catalog";
+import type { ReactNode } from "react";
 
-const SUBJECT_GROUPS = [
-  {
-    name: "Mathematics",
-    icon: <Calculator className="h-4 w-4" />,
-    courses: [
-      { name: "Algebra 1", subtopics: ["Linear Equations", "Linear Inequalities", "Systems of Equations", "Intro to Functions"] },
-      { name: "Algebra 2", subtopics: ["Quadratic Functions", "Complex Numbers", "Logarithms", "Rational Expressions"] },
-      { name: "Geometry", subtopics: ["Trigonometry", "Coordinate Geometry", "Volume & Surface Area", "Congruence & Similarity"] },
-      { name: "Calculus", subtopics: ["Limits & Continuity", "Basic Derivatives", "Basic Integration", "Applications of Derivatives"] },
-      { name: "AP Calculus AB", subtopics: ["Mean Value Theorem", "Fundamental Theorem of Calculus", "Area Between Curves", "Volume of Solids"] },
-      { name: "AP Calculus BC", subtopics: ["Parametric & Polar", "Infinite Series", "Integration by Parts", "Logistic Growth"] },
-      { name: "AP Statistics", subtopics: ["Probability Distributions", "Inference", "Chi-Square Tests", "Linear Regression"] }
-    ]
-  },
-  {
-    name: "Science",
-    icon: <FlaskConical className="h-4 w-4" />,
-    courses: [
-      { name: "Biology", subtopics: ["Cell Structure", "Genetics", "Evolution", "Ecology"] },
-      { name: "AP Biology", subtopics: ["Molecular Biology", "Cellular Energetics", "Heredity", "Gene Expression"] },
-      { name: "Chemistry", subtopics: ["Atomic Structure", "Chemical Bonding", "Stoichiometry", "Solutions"] },
-      { name: "AP Chemistry", subtopics: ["Thermodynamics", "Kinetics", "Equilibrium", "Electrochemistry"] },
-      { name: "Environmental Science", subtopics: ["Ecosystems", "Biodiversity", "Land Use", "Energy Resources"] },
-      { name: "AP Environmental Science", subtopics: ["Atmospheric Pollution", "Global Change", "Populations", "Aquatic Systems"] }
-    ]
-  },
-  {
-    name: "Social Studies",
-    icon: <History className="h-4 w-4" />,
-    courses: [
-      { name: "World History", subtopics: ["Ancient Civilizations", "Middle Ages", "Industrial Revolution", "World Wars"] },
-      { name: "AP World History", subtopics: ["Global Interactions", "Empires", "Industrialization", "Global Conflict"] },
-      { name: "US Government", subtopics: ["The Constitution", "Branches of Gov", "Elections", "Public Policy"] },
-      { name: "AP US Government", subtopics: ["Founding Documents", "Civil Liberties", "Political Ideologies", "Federalism"] },
-      { name: "Economics", subtopics: ["Supply and Demand", "Market Structures", "Business Cycles", "Personal Finance"] },
-      { name: "AP Macroeconomics", subtopics: ["National Income Accounts", "Financial Sector", "Stabilization Policies", "Open Economy"] },
-      { name: "AP Microeconomics", subtopics: ["Consumer Choice", "Firm Behavior", "Factor Markets", "Market Failures"] }
-    ]
-  },
-  {
-    name: "Technology",
-    icon: <Cpu className="h-4 w-4" />,
-    courses: [
-      { name: "Computer Science", subtopics: ["Variables & Control Flow", "Functions", "Arrays", "Logic"] },
-      { name: "AP Computer Science A", subtopics: ["Classes & Objects", "Recursion", "Searching & Sorting", "Inheritance"] }
-    ]
-  },
-  {
-    name: "Languages",
-    icon: <BookOpen className="h-4 w-4" />,
-    courses: [
-      { name: "Spanish", subtopics: ["Present Tense", "Past Tense", "Basic Vocabulary", "Sentence Structure"] },
-      { name: "AP Spanish", subtopics: ["Advanced Syntax", "Nuanced Vocabulary", "Literary Analysis", "Verb Tenses"] }
-    ]
-  }
-];
+const GROUP_ICONS: Record<string, ReactNode> = {
+  Mathematics: <Calculator className="h-4 w-4" />,
+  Science: <FlaskConical className="h-4 w-4" />,
+  "Social Studies": <History className="h-4 w-4" />,
+  Technology: <Cpu className="h-4 w-4" />,
+  Languages: <BookOpen className="h-4 w-4" />
+};
 
 function QuizSetupContent() {
   const router = useRouter();
@@ -123,7 +76,7 @@ function QuizSetupContent() {
                   {SUBJECT_GROUPS.map((group) => (
                     <div key={group.name} className="space-y-3">
                       <h4 className="flex items-center gap-2 font-bold text-[10px] text-primary uppercase tracking-wider">
-                        {group.icon}
+                        {GROUP_ICONS[group.name]}
                         {group.name}
                       </h4>
                       <div className="space-y-1">
@@ -235,18 +188,32 @@ function QuizSetupContent() {
               </div>
 
               <div className="pt-12 border-t">
-                <Button 
-                  className="w-full h-16 rounded-2xl text-lg font-headline shadow-lg active:scale-[0.98] transition-all" 
-                  onClick={startQuiz} 
-                  disabled={isPending}
-                >
-                  {isPending ? (
-                    <div className="flex items-center gap-2">
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                      Loading Workspace...
-                    </div>
-                  ) : "Enter Practice Room"}
-                </Button>
+                <div className="space-y-3">
+                  <Button 
+                    className="w-full h-16 rounded-2xl text-lg font-headline shadow-lg active:scale-[0.98] transition-all" 
+                    onClick={startQuiz} 
+                    disabled={isPending}
+                  >
+                    {isPending ? (
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        Loading Workspace...
+                      </div>
+                    ) : "Enter Practice Room"}
+                  </Button>
+                  <Button
+                    className="w-full h-12 rounded-xl text-sm font-bold uppercase tracking-widest"
+                    variant="outline"
+                    onClick={() =>
+                      router.push(
+                        `/learn?subject=${encodeURIComponent(selectedCourse)}&subtopic=${encodeURIComponent(selectedSubtopic)}`
+                      )
+                    }
+                  >
+                    <Brain className="h-4 w-4 mr-2" />
+                    Study This Unit First
+                  </Button>
+                </div>
               </div>
             </div>
           </CardContent>

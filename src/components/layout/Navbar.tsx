@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { BookMarked, User, LayoutDashboard, Search } from "lucide-react";
+import { BookMarked, LayoutDashboard, Search, Brain } from "lucide-react";
 
 export function Navbar() {
   return (
@@ -27,6 +27,12 @@ export function Navbar() {
               <Button variant="ghost" size="sm" className="font-medium text-muted-foreground hover:text-foreground">
                 <Search className="h-4 w-4 mr-2" />
                 Course Library
+              </Button>
+            </Link>
+            <Link href="/learn">
+              <Button variant="ghost" size="sm" className="font-medium text-muted-foreground hover:text-foreground">
+                <Brain className="h-4 w-4 mr-2" />
+                Learn
               </Button>
             </Link>
           </div>
