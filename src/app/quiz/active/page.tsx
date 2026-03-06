@@ -105,14 +105,21 @@ function ActiveQuizContent() {
     // Step 6: Prefer unseen questions from previous sessions to reduce cross-session repetition.
     const seenIds = getSeenIds();
     const unseenAcrossSessions = unused.filter((q) => !seenIds.has(q.id));
-    const pool = unseenAcrossSessions.length > 0 ? unseenAcrossSessions : unused;
+    let pool = unseenAcrossSessions.length > 0 ? unseenAcrossSessions : unused;
 
-    // Step 7: Never repeat within the same session; if exhausted, end session early.
+    // Step 7: If a narrow subtopic is exhausted, continue with same-subject unused questions.
+    if (pool.length === 0 && !isAllTopics) {
+      const subjectUnused = subjectPool.filter((q) => !currentUsedIds.includes(q.id));
+      const subjectUnseenAcrossSessions = subjectUnused.filter((q) => !seenIds.has(q.id));
+      pool = subjectUnseenAcrossSessions.length > 0 ? subjectUnseenAcrossSessions : subjectUnused;
+    }
+
+    // Step 8: Never repeat within the same session; if exhausted, end session early.
     if (pool.length === 0) {
       return { nextQ: null, exhausted: true };
     }
 
-    // Step 8: Prevent immediate back-to-back repeats when alternatives exist.
+    // Step 9: Prevent immediate back-to-back repeats when alternatives exist.
     const lastUsedId = currentUsedIds[currentUsedIds.length - 1];
     const nonImmediateRepeatPool = pool.length > 1 ? pool.filter((q) => q.id !== lastUsedId) : pool;
     const nextQ = nonImmediateRepeatPool[Math.floor(Math.random() * nonImmediateRepeatPool.length)];
