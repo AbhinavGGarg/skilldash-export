@@ -118,14 +118,24 @@ function QuizSetupContent() {
                                 setSelectedSubtopic("All Topics");
                                 setStep("configure");
                               }}
-                              className={cn(
-                                "w-full flex items-center justify-between px-3 py-3 rounded-xl text-sm font-medium transition-all text-left border",
-                                selectedCourse === course.name
-                                  ? "bg-primary text-primary-foreground shadow-sm border-primary"
-                                  : "hover:bg-muted text-muted-foreground border-muted"
-                              )}
-                            >
-                              <span className="truncate">{course.name}</span>
+                            className={cn(
+                              "w-full flex items-center justify-between px-3 py-3 rounded-xl text-sm font-medium transition-all text-left border",
+                              selectedCourse === course.name
+                                ? "bg-primary text-primary-foreground shadow-sm border-primary"
+                                : "hover:bg-muted text-muted-foreground border-muted"
+                            )}
+                          >
+                              <span className="min-w-0">
+                                <span className="block truncate">{course.name}</span>
+                                <span
+                                  className={cn(
+                                    "block text-[11px] mt-0.5",
+                                    selectedCourse === course.name ? "text-primary-foreground/80" : "text-muted-foreground/80"
+                                  )}
+                                >
+                                  {course.subtopics.length} units
+                                </span>
+                              </span>
                               <ChevronRight className="h-4 w-4 shrink-0" />
                             </button>
                           ))}

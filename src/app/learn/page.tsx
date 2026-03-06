@@ -104,7 +104,17 @@ function LearnSetupContent() {
                                 : "hover:bg-muted text-muted-foreground"
                             )}
                           >
-                            <span className="truncate">{course.name}</span>
+                            <span className="min-w-0">
+                              <span className="block truncate">{course.name}</span>
+                              <span
+                                className={cn(
+                                  "block text-[11px] mt-0.5",
+                                  selectedCourse === course.name ? "text-primary-foreground/80" : "text-muted-foreground/80"
+                                )}
+                              >
+                                {course.subtopics.length} units
+                              </span>
+                            </span>
                             {selectedCourse === course.name && <ChevronRight className="h-4 w-4 shrink-0" />}
                           </button>
                         ))}
