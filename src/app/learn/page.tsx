@@ -2,12 +2,13 @@
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { BookOpen, Brain, Calculator, Check, ChevronRight, Cpu, FileText, FlaskConical, History, Languages, Loader2, PenLine } from "lucide-react";
+import { BookOpen, Brain, Calculator, Check, ChevronRight, Cpu, FileText, FlaskConical, History, Languages, Loader2, PenLine, Search } from "lucide-react";
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { SUBJECT_GROUPS } from "@/lib/course-catalog";
 
@@ -28,6 +29,7 @@ function LearnSetupContent() {
 
   const [selectedCourse, setSelectedCourse] = useState(searchParams.get("subject") || "Algebra 1");
   const [selectedSubtopic, setSelectedSubtopic] = useState(searchParams.get("subtopic") || "All Topics");
+  const [courseSearch, setCourseSearch] = useState("");
 
   const selectedCourseData = useMemo(
     () => SUBJECT_GROUPS.flatMap((g) => g.courses).find((course) => course.name === selectedCourse),
@@ -35,6 +37,14 @@ function LearnSetupContent() {
   );
 
   const availableSubtopics = selectedCourseData?.subtopics ?? [];
+  const filteredGroups = useMemo(() => {
+    const query = courseSearch.trim().toLowerCase();
+    if (!query) return SUBJECT_GROUPS;
+    return SUBJECT_GROUPS.map((group) => ({
+      ...group,
+      courses: group.courses.filter((course) => course.name.toLowerCase().includes(query))
+    })).filter((group) => group.courses.length > 0);
+  }, [courseSearch]);
 
   useEffect(() => {
     if (selectedSubtopic !== "All Topics" && !availableSubtopics.includes(selectedSubtopic)) {
@@ -62,9 +72,18 @@ function LearnSetupContent() {
           <CardContent className="grid grid-cols-1 lg:grid-cols-4 gap-0 p-0">
             <div className="border-r bg-muted/20 p-8 space-y-6">
               <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground block">01. Choose Course</Label>
+              <div className="relative">
+                <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  value={courseSearch}
+                  onChange={(e) => setCourseSearch(e.target.value)}
+                  placeholder="Search course..."
+                  className="pl-10 h-11 rounded-xl bg-white"
+                />
+              </div>
               <ScrollArea className="h-[500px]">
                 <div className="space-y-8 pr-4">
-                  {SUBJECT_GROUPS.map((group) => (
+                  {filteredGroups.map((group) => (
                     <div key={group.name} className="space-y-3">
                       <h4 className="flex items-center gap-2 font-bold text-[10px] text-primary uppercase tracking-wider">
                         {GROUP_ICONS[group.name]}
