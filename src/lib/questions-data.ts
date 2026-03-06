@@ -7465,8 +7465,48 @@ const BANNED_PATTERNS = [
   "which argument is strongest",
   "which interpretation is strongest",
   "which explanation is most convincing",
-  "which interpretation is most convincing"
+  "which interpretation is most convincing",
+  "which reasoning is correct",
+  "which argument is best",
+  "which method is most reliable",
+  "which checkpoint protects accuracy",
+  "which approach is best",
+  "which strategy should be used",
+  "which explanation is strongest",
+  "which reasoning is strongest"
 ];
+
+const TOPIC_STOP_WORDS = new Set([
+  "unit", "and", "the", "of", "for", "to", "in", "on", "with", "a", "an", "ap", "i", "ii", "iii",
+  "iv", "v", "vi", "vii", "viii", "ix", "x", "basics", "introduction", "foundations"
+]);
+
+type QuestionType = "definition" | "formula" | "multi_step" | "conceptual" | "application";
+
+function extractTopicKeywords(subtopic: string): string[] {
+  const lower = normalize(subtopic);
+  const words = lower
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter((w) => w.length > 2 && !TOPIC_STOP_WORDS.has(w));
+  return Array.from(new Set([lower, ...words]));
+}
+
+function ensureTopicAnchoring(questionText: string, subtopic: string): string {
+  const normalizedQuestion = normalize(questionText);
+  const topicKeywords = extractTopicKeywords(subtopic);
+  const containsTopicWord = topicKeywords.some((keyword) => normalizedQuestion.includes(keyword));
+  if (containsTopicWord) return questionText;
+  return `In ${subtopic}, ${questionText.charAt(0).toLowerCase()}${questionText.slice(1)}`;
+}
+
+function questionStem(text: string): string {
+  return normalize(text)
+    .replace(/\d+(\.\d+)?/g, "#")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
 const CURRICULUM_TEMPLATES: Array<{
   keywords: string[];
@@ -7975,7 +8015,7 @@ function sanitizeQuestionTemplate(template: GeneratedTemplate, subject: string, 
   if (!hasBannedPhrase) return template;
 
   return {
-    question: `Which statement correctly describes a core concept from ${subject} (${subtopic})?`,
+    question: `In ${subject} (${subtopic}), which statement correctly describes the tested concept?`,
     correct: template.correct,
     distractors: template.distractors,
     explanation: template.explanation,
@@ -7983,27 +8023,60 @@ function sanitizeQuestionTemplate(template: GeneratedTemplate, subject: string, 
   };
 }
 
+function renderQuestionByType(template: GeneratedTemplate, subtopic: string, type: QuestionType): string {
+  const base = template.question.replace(/\s+/g, " ").trim();
+  if (type === "definition") {
+    return `In ${subtopic}, which definition is correct?`;
+  }
+  if (type === "formula") {
+    return `In ${subtopic}, which formula or relationship is correct?`;
+  }
+  if (type === "multi_step") {
+    return `A student solves a ${subtopic} problem in two steps. Which final result is correct?`;
+  }
+  if (type === "conceptual") {
+    return `In ${subtopic}, which concept statement is accurate?`;
+  }
+  if (type === "application") {
+    return `In a real-world ${subtopic} scenario, which result is valid?`;
+  }
+  return base;
+}
+
+function validateGeneratedQuestion(questionText: string, subtopic: string): boolean {
+  const lowered = normalize(questionText);
+  if (BANNED_PATTERNS.some((pattern) => lowered.includes(pattern))) return false;
+  const keywords = extractTopicKeywords(subtopic);
+  return keywords.some((keyword) => lowered.includes(keyword));
+}
+
 function buildGeneratedChoices(
   domain: "math" | "science" | "social" | "english" | "language" | "technology",
   subject: string,
   subtopic: string,
   difficulty: "easy" | "medium" | "hard",
-  variant: number
+  variant: number,
+  type: QuestionType
 ): Pick<Question, "question" | "choices" | "answerIndex" | "explanation" | "rigor"> {
   const family = pickTemplate(domain, subject, subtopic);
   const picked = difficulty === "easy" ? family.easy : difficulty === "medium" ? family.medium : family.hard;
   const sanitized = sanitizeQuestionTemplate(picked, subject, subtopic);
+  const typedQuestion = renderQuestionByType(sanitized, subtopic, type);
+  const anchoredQuestion = ensureTopicAnchoring(typedQuestion, subtopic);
+  const finalQuestion = validateGeneratedQuestion(anchoredQuestion, subtopic)
+    ? anchoredQuestion
+    : `In ${subtopic}, which statement correctly describes the core topic content?`;
   const finalized = buildOptionsWithStableOrder(
     sanitized.correct,
     sanitized.distractors,
-    `${subject}:${subtopic}:${difficulty}:${variant}`
+    `${subject}:${subtopic}:${difficulty}:${variant}:${type}`
   );
 
   return {
-    question: sanitized.question,
+    question: finalQuestion,
     choices: finalized.choices,
     answerIndex: finalized.answerIndex,
-    explanation: sanitized.explanation,
+    explanation: `${sanitized.explanation} Distractors represent common misconceptions or typical calculation/interpretation errors in ${subtopic}.`,
     rigor: sanitized.rigor
   };
 }
@@ -8012,6 +8085,7 @@ function buildExpandedCoverageQuestions(): Question[] {
   const existingPairs = new Set(
     QUESTION_BANK.map((q) => `${normalize(q.subject)}::${normalize(q.subtopic)}`)
   );
+  const existingStems = new Set(QUESTION_BANK.map((q) => questionStem(q.question)));
 
   const generated: Question[] = [];
 
@@ -8022,17 +8096,22 @@ function buildExpandedCoverageQuestions(): Question[] {
         const pairKey = `${normalize(course.name)}::${normalize(subtopic)}`;
         if (existingPairs.has(pairKey)) continue;
 
-        const patterns: Array<{ difficulty: "easy" | "medium" | "hard"; variant: number }> = [
-          { difficulty: "easy", variant: 1 },
-          { difficulty: "medium", variant: 2 },
-          { difficulty: "hard", variant: 3 },
-          { difficulty: "hard", variant: 4 }
+        const patterns: Array<{ difficulty: "easy" | "medium" | "hard"; variant: number; type: QuestionType }> = [
+          { difficulty: "easy", variant: 1, type: "definition" },
+          { difficulty: "easy", variant: 2, type: "formula" },
+          { difficulty: "medium", variant: 3, type: "multi_step" },
+          { difficulty: "hard", variant: 4, type: "conceptual" },
+          { difficulty: "hard", variant: 5, type: "application" }
         ];
 
         for (const pattern of patterns) {
-          const built = buildGeneratedChoices(domain, course.name, subtopic, pattern.difficulty, pattern.variant);
+          const built = buildGeneratedChoices(domain, course.name, subtopic, pattern.difficulty, pattern.variant, pattern.type);
+          const stem = questionStem(built.question);
+          if (existingStems.has(stem)) continue;
+          existingStems.add(stem);
+
           generated.push({
-            id: `xp-${slugify(course.name)}-${slugify(subtopic)}-${pattern.difficulty}-${pattern.variant}`,
+            id: `xp-${slugify(course.name)}-${slugify(subtopic)}-${pattern.difficulty}-${pattern.variant}-${pattern.type}`,
             subject: course.name,
             topic: subtopic,
             subtopic,
@@ -8059,7 +8138,11 @@ function passesPromptQualityFilter(questionText: string): boolean {
 }
 
 export const ACTIVE_QUESTION_BANK = [...QUESTION_BANK, ...EXPANDED_COVERAGE_QUESTIONS].filter(
-  (q) => !q.id.startsWith("auto-") && !q.id.startsWith("hq2-") && passesPromptQualityFilter(q.question)
+  (q) =>
+    !q.id.startsWith("auto-") &&
+    !q.id.startsWith("hq2-") &&
+    passesPromptQualityFilter(q.question) &&
+    (!q.id.startsWith("xp-") || validateGeneratedQuestion(q.question, q.subtopic))
 );
 
 export function getQuestionPool(subject: string, subtopic: string, difficulty?: string): Question[] {
