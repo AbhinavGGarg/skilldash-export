@@ -8096,9 +8096,90 @@ function buildDomainSpecificTemplate(
         rigor: 3
       };
     }
+
+    if (topic.includes("limit")) {
+      const k = seededInt(seed + "k", 1, 4);
+      return {
+        question: `In ${subtopic}, evaluate $\\lim_{x\\to${k}} \\frac{x^2-${k * k}}{x-${k}}$.`,
+        correct: `${2 * k}`,
+        distractors: [`${k}`, `${k * k}`, `${2 * k + 1}`],
+        explanation: "Factor numerator: $(x-k)(x+k)$, cancel, then substitute $x=k$ to get $2k$. Distractors reflect common substitution/factoring mistakes.",
+        rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
+      };
+    }
+
+    if (topic.includes("integrat")) {
+      const a = seededInt(seed + "a", 2, 5);
+      return {
+        question: `In ${subtopic}, compute $\\int_0^2 ${a}x\\,dx$.`,
+        correct: `${2 * a}`,
+        distractors: [`${a}`, `${4 * a}`, `${a + 2}`],
+        explanation: "Antiderivative is $\\frac{a}{2}x^2$. Evaluate from 0 to 2: $\\frac{a}{2}(4)=2a$. Distractors come from missing bounds/antiderivative errors.",
+        rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
+      };
+    }
+
+    if (topic.includes("probability") || topic.includes("inference") || topic.includes("chi-square") || topic.includes("regression") || topic.includes("statistics")) {
+      return {
+        question: `In ${subtopic}, what is the expected value of a variable with outcomes 1, 2, 3 and probabilities 0.2, 0.3, 0.5?`,
+        correct: "2.3",
+        distractors: ["2.0", "2.5", "3.0"],
+        explanation: "Expected value is weighted mean: $1(0.2)+2(0.3)+3(0.5)=2.3$. Distractors use unweighted or partial calculations.",
+        rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
+      };
+    }
+
+    if (topic.includes("area") || topic.includes("volume") || topic.includes("surface") || topic.includes("geometry")) {
+      const l = seededInt(seed + "l", 6, 12);
+      const w = seededInt(seed + "w", 3, 7);
+      return {
+        question: `In ${subtopic}, a rectangle has length ${l} and width ${w}. What is its area?`,
+        correct: `${l * w}`,
+        distractors: [`${2 * (l + w)}`, `${l + w}`, `${l * w + 2}`],
+        explanation: "Area of rectangle is $A=lw$. Distractors confuse area with perimeter or arithmetic slips.",
+        rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
+      };
+    }
+
+    const m = seededInt(seed + "m", 2, 9);
+    const c = seededInt(seed + "c", 1, 8);
+    return {
+      question: `In ${subtopic}, for the linear model $y=${m}x+${c}$, what is $y$ when $x=3$?`,
+      correct: `${m * 3 + c}`,
+      distractors: [`${m + c}`, `${m * 3}`, `${m * 2 + c}`],
+      explanation: "Substitute $x=3$ directly into the model. Distractors skip multiplication/addition steps.",
+      rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
+    };
   }
 
   if (domain === "science") {
+    if (topic.includes("biology") || topic.includes("cell") || topic.includes("genetic") || topic.includes("evolution") || topic.includes("ecology")) {
+      return {
+        question: `In ${subtopic}, which organelle is the primary site of ATP production in eukaryotic cells?`,
+        correct: "Mitochondrion",
+        distractors: ["Golgi apparatus", "Nucleus", "Ribosome"],
+        explanation: "Mitochondria perform cellular respiration to generate ATP. Other organelles have different cellular roles.",
+        rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
+      };
+    }
+    if (topic.includes("chem") || topic.includes("stoichiometry") || topic.includes("kinetics") || topic.includes("equilibrium") || topic.includes("acid") || topic.includes("electro")) {
+      return {
+        question: `In ${subtopic}, what does a coefficient in a balanced chemical equation represent?`,
+        correct: "The mole ratio between substances in the reaction",
+        distractors: ["The charge of each molecule", "The atomic number of each element", "The reaction temperature"],
+        explanation: "Coefficients set stoichiometric mole ratios. Distractors confuse with unrelated chemical properties.",
+        rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
+      };
+    }
+    if (topic.includes("physics") || topic.includes("kinematics") || topic.includes("dynamics") || topic.includes("energy") || topic.includes("wave") || topic.includes("electric") || topic.includes("fluid")) {
+      return {
+        question: `In ${subtopic}, if a 4 kg object accelerates at 3 m/s², what is the net force?`,
+        correct: "12 N",
+        distractors: ["7 N", "1.33 N", "24 N"],
+        explanation: "Use $F=ma$: $4\\times3=12$ N. Distractors come from adding/dividing incorrectly.",
+        rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
+      };
+    }
     if (type === "definition") {
       return {
         question: `In ${subtopic}, what is a control variable?`,
@@ -8108,6 +8189,80 @@ function buildDomainSpecificTemplate(
         rigor: 1
       };
     }
+    return {
+      question: `In ${subtopic}, why are repeated trials important in an experiment?`,
+      correct: "They reduce random error and improve reliability of results.",
+      distractors: ["They eliminate the need for controls.", "They guarantee the hypothesis is true.", "They remove all uncertainty from data."],
+      explanation: "Replication increases reliability by reducing random variation; it does not eliminate uncertainty or replace controls.",
+      rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
+    };
+  }
+
+  if (domain === "social") {
+    if (topic.includes("history") || topic.includes("world") || topic.includes("us ")) {
+      return {
+        question: `In ${subtopic}, which source is a primary source?`,
+        correct: "A diary written by someone living during the event",
+        distractors: ["A modern textbook chapter", "A documentary created centuries later", "A present-day blog summary"],
+        explanation: "Primary sources are created during the time period being studied. The distractors are secondary/tertiary interpretations.",
+        rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
+      };
+    }
+    if (topic.includes("government") || topic.includes("civics") || topic.includes("constitution") || topic.includes("federalism")) {
+      return {
+        question: `In ${subtopic}, what is judicial review?`,
+        correct: "The power of courts to determine whether laws/actions are constitutional",
+        distractors: ["The power of Congress to overrule all court decisions immediately", "The power of states to rewrite the Constitution", "The power of the President to appoint all judges without approval"],
+        explanation: "Judicial review is constitutional interpretation by courts. Distractors describe incorrect powers.",
+        rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
+      };
+    }
+    if (topic.includes("economics") || topic.includes("market") || topic.includes("macro") || topic.includes("micro")) {
+      return {
+        question: `In ${subtopic}, if demand increases while supply stays constant, what happens to equilibrium price?`,
+        correct: "It rises.",
+        distractors: ["It falls.", "It stays the same in all cases.", "It becomes zero."],
+        explanation: "Higher demand shifts equilibrium upward in price when supply is unchanged.",
+        rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
+      };
+    }
+    return {
+      question: `In ${subtopic}, what makes a historical or civic claim strong?`,
+      correct: "Specific evidence connected to context and causation",
+      distractors: ["Strong wording without evidence", "A single anecdote only", "Repeating common opinions"],
+      explanation: "Strong claims require evidence + context + causal reasoning, not rhetoric alone.",
+      rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
+    };
+  }
+
+  if (domain === "english") {
+    return {
+      question: `In ${subtopic}, what is the strongest thesis statement quality?`,
+      correct: "It is specific, arguable, and directly supported by textual evidence.",
+      distractors: ["It summarizes the text only.", "It uses advanced vocabulary without evidence.", "It states a personal opinion without analysis."],
+      explanation: "A strong thesis is arguable and evidence-driven. Distractors omit argument quality or evidence.",
+      rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
+    };
+  }
+
+  if (domain === "language") {
+    return {
+      question: `In ${subtopic}, why does subject-verb agreement matter?`,
+      correct: "Because verb forms must match the subject in person and number",
+      distractors: ["Because punctuation determines agreement", "Because agreement is optional in formal writing", "Because vocabulary level replaces grammar rules"],
+      explanation: "Agreement is a core grammar rule; distractors incorrectly attribute agreement to punctuation, style, or vocabulary.",
+      rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
+    };
+  }
+
+  if (domain === "technology") {
+    return {
+      question: `In ${subtopic}, what is an algorithm?`,
+      correct: "A finite, unambiguous sequence of steps to solve a problem",
+      distractors: ["Any code that compiles", "A variable storing data", "A visual design theme"],
+      explanation: "Algorithms are precise procedures. Distractors confuse algorithms with implementation details or UI concepts.",
+      rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
+    };
   }
 
   return null;
