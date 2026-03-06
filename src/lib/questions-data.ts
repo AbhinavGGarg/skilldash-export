@@ -7508,6 +7508,15 @@ function questionStem(text: string): string {
     .trim();
 }
 
+function seedNumber(seed: string): number {
+  return Math.abs(seed.split("").reduce((acc, ch) => acc * 31 + ch.charCodeAt(0), 7));
+}
+
+function seededInt(seed: string, min: number, max: number): number {
+  const span = max - min + 1;
+  return min + (seedNumber(seed) % span);
+}
+
 const CURRICULUM_TEMPLATES: Array<{
   keywords: string[];
   easy: GeneratedTemplate;
@@ -8023,29 +8032,96 @@ function sanitizeQuestionTemplate(template: GeneratedTemplate, subject: string, 
   };
 }
 
-function renderQuestionByType(template: GeneratedTemplate, subtopic: string, type: QuestionType): string {
-  const base = template.question.replace(/\s+/g, " ").trim();
-  if (type === "definition") {
-    return `In ${subtopic}, which definition is correct?`;
+function buildDomainSpecificTemplate(
+  domain: "math" | "science" | "social" | "english" | "language" | "technology",
+  subject: string,
+  subtopic: string,
+  type: QuestionType,
+  difficulty: "easy" | "medium" | "hard",
+  variant: number
+): GeneratedTemplate | null {
+  const topic = normalize(subtopic);
+  const seed = `${subject}:${subtopic}:${type}:${difficulty}:${variant}`;
+
+  if (domain === "math") {
+    if (topic.includes("differentiation") || topic.includes("derivative")) {
+      const a = seededInt(seed + "a", 2, 6);
+      const n = seededInt(seed + "n", 2, 5);
+      const b = seededInt(seed + "b", 1, 5);
+      const x = seededInt(seed + "x", 1, 4);
+      const correctDerivative = `${a * n}x^${n - 1} - ${b}`;
+      const valueAtX = a * n * Math.pow(x, n - 1) - b;
+
+      if (type === "definition") {
+        return {
+          question: `In ${subtopic}, what does the derivative of a function represent at a point?`,
+          correct: "The instantaneous rate of change (slope of the tangent line)",
+          distractors: ["The average value of the function on an interval", "The total accumulated area under the function", "The x-intercept of the function"],
+          explanation: "Derivative at a point gives instantaneous rate of change/tangent slope; the distractors describe different quantities.",
+          rigor: 1
+        };
+      }
+      if (type === "formula") {
+        return {
+          question: `In ${subtopic}, if $f(x)=${a}x^${n}-${b}x$, what is $f'(x)$?`,
+          correct: `$${correctDerivative}$`,
+          distractors: [`$${a}x^${n - 1}-${b}$`, `$${a * n}x^${n}-${b}$`, `$${a * n}x^${n - 1}$`],
+          explanation: "Apply power rule term-by-term. Distractors come from common exponent and constant-derivative mistakes.",
+          rigor: 2
+        };
+      }
+      if (type === "multi_step") {
+        return {
+          question: `In ${subtopic}, let $g(x)=${a}x^${n}-${b}x+3$. What is $g'(${x})$?`,
+          correct: `${valueAtX}`,
+          distractors: [`${valueAtX + 2}`, `${valueAtX - 2}`, `${a * Math.pow(x, n) - b * x + 3}`],
+          explanation: "Differentiate first, then substitute $x=${x}$. Distractors reflect skipping differentiation or arithmetic slips.",
+          rigor: 3
+        };
+      }
+      if (type === "conceptual") {
+        return {
+          question: `In ${subtopic}, if $f'(x)>0$ on an interval, what must be true about $f$ on that interval?`,
+          correct: "The function is increasing on that interval.",
+          distractors: ["The function is concave up everywhere.", "The function is decreasing on that interval.", "The function has a local maximum at every point."],
+          explanation: "Positive derivative implies increasing behavior. Concavity needs second derivative; maxima are not implied.",
+          rigor: 2
+        };
+      }
+      return {
+        question: `A particle has position $s(t)=t^3-6t^2+9t$. In ${subtopic}, what is the velocity at $t=2$?`,
+        correct: "$-3$",
+        distractors: ["$3$", "$-6$", "$2$"],
+        explanation: "Velocity is $s'(t)=3t^2-12t+9$, so $s'(2)=12-24+9=-3$. Distractors reflect sign and substitution errors.",
+        rigor: 3
+      };
+    }
   }
-  if (type === "formula") {
-    return `In ${subtopic}, which formula or relationship is correct?`;
+
+  if (domain === "science") {
+    if (type === "definition") {
+      return {
+        question: `In ${subtopic}, what is a control variable?`,
+        correct: "A factor kept constant so the effect of the independent variable can be isolated",
+        distractors: ["The variable that is intentionally changed", "The measured outcome of the experiment", "Any variable that can be ignored"],
+        explanation: "Control variables are held fixed; distractors confuse independent/dependent variables or misuse experimental design terms.",
+        rigor: 1
+      };
+    }
   }
-  if (type === "multi_step") {
-    return `A student solves a ${subtopic} problem in two steps. Which final result is correct?`;
-  }
-  if (type === "conceptual") {
-    return `In ${subtopic}, which concept statement is accurate?`;
-  }
-  if (type === "application") {
-    return `In a real-world ${subtopic} scenario, which result is valid?`;
-  }
-  return base;
+
+  return null;
 }
 
 function validateGeneratedQuestion(questionText: string, subtopic: string): boolean {
   const lowered = normalize(questionText);
   if (BANNED_PATTERNS.some((pattern) => lowered.includes(pattern))) return false;
+  if (
+    lowered.includes("which concept statement is accurate") ||
+    lowered.includes("which statement correctly describes the tested concept")
+  ) {
+    return false;
+  }
   const keywords = extractTopicKeywords(subtopic);
   return keywords.some((keyword) => lowered.includes(keyword));
 }
@@ -8059,13 +8135,15 @@ function buildGeneratedChoices(
   type: QuestionType
 ): Pick<Question, "question" | "choices" | "answerIndex" | "explanation" | "rigor"> {
   const family = pickTemplate(domain, subject, subtopic);
-  const picked = difficulty === "easy" ? family.easy : difficulty === "medium" ? family.medium : family.hard;
+  const fallbackPicked = difficulty === "easy" ? family.easy : difficulty === "medium" ? family.medium : family.hard;
+  const picked =
+    buildDomainSpecificTemplate(domain, subject, subtopic, type, difficulty, variant) ??
+    fallbackPicked;
   const sanitized = sanitizeQuestionTemplate(picked, subject, subtopic);
-  const typedQuestion = renderQuestionByType(sanitized, subtopic, type);
-  const anchoredQuestion = ensureTopicAnchoring(typedQuestion, subtopic);
+  const anchoredQuestion = ensureTopicAnchoring(sanitized.question, subtopic);
   const finalQuestion = validateGeneratedQuestion(anchoredQuestion, subtopic)
     ? anchoredQuestion
-    : `In ${subtopic}, which statement correctly describes the core topic content?`;
+    : `In ${subtopic}, what is the correct curriculum-based statement?`;
   const finalized = buildOptionsWithStableOrder(
     sanitized.correct,
     sanitized.distractors,
