@@ -25,6 +25,7 @@ function ActiveQuizContent() {
     const normalize = (s: string) => s?.trim().toLowerCase() || "";
     return `quiz_seen_ids:${normalize(selectedSubject)}:${normalize(selectedSubtopic)}:${normalize(selectedDifficulty)}`;
   }, [selectedSubject, selectedSubtopic, selectedDifficulty]);
+  const isAllTopicsMode = useMemo(() => selectedSubtopic.trim().toLowerCase() === "all topics", [selectedSubtopic]);
 
   // Selection Engine State
   const [usedQuestionIds, setUsedQuestionIds] = useState<string[]>([]);
@@ -60,6 +61,11 @@ function ActiveQuizContent() {
       // no-op: localStorage should not block quiz flow
     }
   }, [getSeenIds, historyKey]);
+
+  const isQuestionInSelectedScope = useCallback((q: Question) => {
+    if (isAllTopicsMode) return true;
+    return q.subtopic.trim().toLowerCase() === selectedSubtopic.trim().toLowerCase();
+  }, [isAllTopicsMode, selectedSubtopic]);
 
   // Normalized Filtering and Selection Engine
   const getNextQuestion = useCallback((currentUsedIds: string[]) => {
@@ -109,11 +115,10 @@ function ActiveQuizContent() {
     const unseenAcrossSessions = unused.filter((q) => !seenIds.has(q.id));
     let pool = unseenAcrossSessions.length > 0 ? unseenAcrossSessions : unused;
 
-    // Step 7: If a narrow subtopic is exhausted, continue with same-subject unused questions.
-    if (pool.length === 0 && !isAllTopics) {
-      const subjectUnused = subjectPool.filter((q) => !currentUsedIds.includes(q.id));
-      const subjectUnseenAcrossSessions = subjectUnused.filter((q) => !seenIds.has(q.id));
-      pool = subjectUnseenAcrossSessions.length > 0 ? subjectUnseenAcrossSessions : subjectUnused;
+    // Step 7: Strict unit lock for non-comprehensive mode.
+    // Never jump to other units when a specific unit is selected.
+    if (!isAllTopics) {
+      pool = pool.filter((q) => normalize(q.subtopic) === normalizedSubtopic);
     }
 
     // Step 8: Never repeat within the same session; if exhausted, end session early.
@@ -136,13 +141,15 @@ function ActiveQuizContent() {
   // Initial Load
   useEffect(() => {
     const result = getNextQuestion([]);
-    if (result?.nextQ) {
+    if (result?.nextQ && isQuestionInSelectedScope(result.nextQ)) {
       setCurrentQuestion(result.nextQ);
       setUsedQuestionIds([result.nextQ.id]);
       persistSeenId(result.nextQ.id);
+    } else if (!isAllTopicsMode) {
+      setUnavailable(true);
     }
     setIsLoading(false);
-  }, [getNextQuestion, persistSeenId]);
+  }, [getNextQuestion, persistSeenId, isQuestionInSelectedScope, isAllTopicsMode]);
 
   if (isLoading) return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] worksheet-bg text-center space-y-4">
@@ -203,7 +210,7 @@ function ActiveQuizContent() {
   const handleNext = () => {
     if (currentIndex < targetCount - 1) {
       const result = getNextQuestion(usedQuestionIds);
-      if (result?.nextQ) {
+      if (result?.nextQ && isQuestionInSelectedScope(result.nextQ)) {
         setCurrentQuestion(result.nextQ);
         setUsedQuestionIds(prev => [...prev, result.nextQ.id]);
         persistSeenId(result.nextQ.id);
