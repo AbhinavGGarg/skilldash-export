@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { BookOpen, Brain, Calculator, Check, ChevronRight, Cpu, FlaskConical, History, Loader2 } from "lucide-react";
+import { BookOpen, Brain, Calculator, Check, ChevronRight, Cpu, FileText, FlaskConical, History, Languages, Loader2, PenLine } from "lucide-react";
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,8 +15,11 @@ const GROUP_ICONS: Record<string, ReactNode> = {
   Mathematics: <Calculator className="h-4 w-4" />,
   Science: <FlaskConical className="h-4 w-4" />,
   "Social Studies": <History className="h-4 w-4" />,
+  English: <PenLine className="h-4 w-4" />,
+  "Foreign Language": <Languages className="h-4 w-4" />,
   Technology: <Cpu className="h-4 w-4" />,
-  Languages: <BookOpen className="h-4 w-4" />
+  "SAT Prep": <FileText className="h-4 w-4" />,
+  "ACT Prep": <BookOpen className="h-4 w-4" />
 };
 
 function LearnSetupContent() {

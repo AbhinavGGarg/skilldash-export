@@ -39,6 +39,14 @@ const DOMAIN_OVERVIEW: Record<string, string> = {
     "This unit is scored on correctness and design quality. You need robust logic, edge-case handling, and clear justification.",
   Languages:
     "This unit is scored on meaning precision and grammar control. You need accurate form, coherent expression, and context-appropriate language.",
+  "Foreign Language":
+    "This unit is scored on meaning precision and grammar control. You need accurate form, coherent expression, and context-appropriate language.",
+  English:
+    "This unit is scored on analytical reading and argument writing quality. You need evidence-backed claims, coherent organization, and control of style.",
+  "SAT Prep":
+    "This unit is scored on speed plus precision under timed test conditions. You need fast pattern recognition and strict error control.",
+  "ACT Prep":
+    "This unit is scored on accuracy and pacing. You need clear strategy, elimination discipline, and evidence-based answer selection.",
   General:
     "This unit is scored on whether your reasoning is complete, evidence-backed, and checked for errors."
 };
@@ -73,6 +81,30 @@ const DOMAIN_STEPS: Record<string, string[]> = {
     "Select tense/agreement/syntax to match context.",
     "Refine connectors and transitions for coherence.",
     "Proofread for form accuracy and nuance."
+  ],
+  "Foreign Language": [
+    "Determine communicative intent and register first.",
+    "Select tense/agreement/syntax to match context.",
+    "Refine connectors and transitions for coherence.",
+    "Proofread for form accuracy and nuance."
+  ],
+  English: [
+    "Annotate claim, evidence, and rhetorical moves while reading.",
+    "Build a thesis that directly answers the prompt.",
+    "Use quotes or details strategically, then explain significance.",
+    "Revise for clarity, cohesion, and precision."
+  ],
+  "SAT Prep": [
+    "Read the prompt type first, then the relevant line range.",
+    "Eliminate choices using concrete textual/math evidence.",
+    "Prioritize high-yield methods over long derivations.",
+    "Track pacing checkpoints every section block."
+  ],
+  "ACT Prep": [
+    "Classify the question type before solving.",
+    "Use evidence-first elimination to avoid trap options.",
+    "Apply time-boxing and skip-return strategy.",
+    "Verify final selections against passage/data constraints."
   ],
   General: [
     "Clarify what is asked.",
@@ -112,6 +144,30 @@ const DOMAIN_TRAPS: Record<string, string[]> = {
     "Correct vocabulary with wrong register or tense.",
     "Agreement errors in longer structures.",
     "Weak cohesion from missing transitions."
+  ],
+  "Foreign Language": [
+    "Literal translation that breaks intended meaning.",
+    "Correct vocabulary with wrong register or tense.",
+    "Agreement errors in longer structures.",
+    "Weak cohesion from missing transitions."
+  ],
+  English: [
+    "Using summary when the prompt demands analysis.",
+    "Claiming without concrete textual evidence.",
+    "Weak reasoning links between quote and argument.",
+    "Grammar/syntax issues that reduce clarity."
+  ],
+  "SAT Prep": [
+    "Over-reading answer choices without checking the exact evidence line.",
+    "Doing long math when a shorter structure-based path exists.",
+    "Losing points on easy questions from pacing drift.",
+    "Ignoring unit, sign, or boundary conditions."
+  ],
+  "ACT Prep": [
+    "Spending too long on one question early in a section.",
+    "Choosing plausible answers not directly supported by data/text.",
+    "Skipping diagram/table labels during science/math items.",
+    "Failing to return to marked questions with fresh elimination."
   ],
   General: [
     "Choosing first plausible option without comparison.",

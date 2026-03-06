@@ -9,7 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   Calculator, FlaskConical, BookOpen, History, Cpu,
-  Loader2, ChevronRight, Check, GraduationCap, Brain
+  Loader2, ChevronRight, Check, GraduationCap, Brain, Languages, FileText, PenLine
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
@@ -20,8 +20,11 @@ const GROUP_ICONS: Record<string, ReactNode> = {
   Mathematics: <Calculator className="h-4 w-4" />,
   Science: <FlaskConical className="h-4 w-4" />,
   "Social Studies": <History className="h-4 w-4" />,
+  English: <PenLine className="h-4 w-4" />,
+  "Foreign Language": <Languages className="h-4 w-4" />,
   Technology: <Cpu className="h-4 w-4" />,
-  Languages: <BookOpen className="h-4 w-4" />
+  "SAT Prep": <FileText className="h-4 w-4" />,
+  "ACT Prep": <BookOpen className="h-4 w-4" />
 };
 
 function QuizSetupContent() {
