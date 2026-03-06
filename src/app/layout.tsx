@@ -3,6 +3,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { FirebaseClientProvider } from '@/firebase';
+import { AiTutorWidget } from '@/components/AiTutorWidget';
 import 'katex/dist/katex.min.css';
 
 export const metadata: Metadata = {
@@ -28,6 +29,7 @@ export default function RootLayout({
           <main className="flex-1">
             {children}
           </main>
+          <AiTutorWidget />
         </FirebaseClientProvider>
       </body>
     </html>
