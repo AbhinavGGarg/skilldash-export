@@ -7453,6 +7453,536 @@ function resolveDomain(groupName: string, subject: string): "math" | "science" |
   return "social";
 }
 
+type GeneratedTemplate = {
+  question: string;
+  correct: string;
+  distractors: [string, string, string];
+  explanation: string;
+  rigor: 1 | 2 | 3;
+};
+
+const BANNED_PATTERNS = [
+  "which argument is strongest",
+  "which interpretation is strongest",
+  "which explanation is most convincing",
+  "which interpretation is most convincing"
+];
+
+const CURRICULUM_TEMPLATES: Array<{
+  keywords: string[];
+  easy: GeneratedTemplate;
+  medium: GeneratedTemplate;
+  hard: GeneratedTemplate;
+}> = [
+  {
+    keywords: ["linear equations", "algebra", "sat math", "act math"],
+    easy: {
+      question: "What is the slope of the line in standard form $Ax + By = C$?",
+      correct: "$m=-\\frac{A}{B}$ when $B\\neq0$",
+      distractors: ["$m=\\frac{A}{B}$", "$m=\\frac{B}{A}$", "$m=C$"],
+      explanation: "Rewriting $Ax+By=C$ to slope-intercept form gives $y=-\\frac{A}{B}x+\\frac{C}{B}$. The other options misuse coefficients.",
+      rigor: 1
+    },
+    medium: {
+      question: "A taxi charges $4$ dollars plus $2.5$ dollars per mile. Which equation gives total cost $C$ after $m$ miles?",
+      correct: "$C=4+2.5m$",
+      distractors: ["$C=2.5+4m$", "$C=4m+2.5m$", "$C=\\frac{4}{2.5}m$"],
+      explanation: "The fixed fee is the intercept and per-mile rate is slope. Other options swap or combine terms incorrectly.",
+      rigor: 2
+    },
+    hard: {
+      question: "If two lines have slopes $\\frac{3}{4}$ and $-\\frac{4}{3}$, what is true?",
+      correct: "The lines are perpendicular.",
+      distractors: ["The lines are parallel.", "The lines are the same line.", "The lines cannot intersect."],
+      explanation: "Perpendicular nonvertical lines have slopes that are negative reciprocals. The distractors confuse perpendicular with parallel or coincident lines.",
+      rigor: 3
+    }
+  },
+  {
+    keywords: ["quadratic", "parabola", "algebra 2"],
+    easy: {
+      question: "For $y=(x-2)^2+5$, what is the vertex?",
+      correct: "$(2,5)$",
+      distractors: ["$(-2,5)$", "$(2,-5)$", "$(5,2)$"],
+      explanation: "Vertex form is $y=(x-h)^2+k$ with vertex $(h,k)$. The other choices mis-handle sign or coordinate order.",
+      rigor: 1
+    },
+    medium: {
+      question: "Which discriminant value indicates exactly one real root?",
+      correct: "$b^2-4ac=0$",
+      distractors: ["$b^2-4ac>0$", "$b^2-4ac<0$", "$a=0$"],
+      explanation: "A zero discriminant gives a repeated real root. Positive gives two real roots; negative gives two complex roots.",
+      rigor: 2
+    },
+    hard: {
+      question: "If $f(x)=x^2-6x+8$, where is the minimum value attained?",
+      correct: "$x=3$",
+      distractors: ["$x=-3$", "$x=6$", "$x=8$"],
+      explanation: "The vertex x-value is $-\\frac{b}{2a}=\\frac{6}{2}=3$. Other values are common coefficient confusions.",
+      rigor: 3
+    }
+  },
+  {
+    keywords: ["derivative", "calculus", "ap calculus"],
+    easy: {
+      question: "What does $f'(x)$ represent geometrically?",
+      correct: "The slope of the tangent line to $f$ at $x$",
+      distractors: ["The average value of $f$ on an interval", "The area under $f$", "The x-intercept of $f$"],
+      explanation: "Derivative is instantaneous rate of change/tangent slope. The other options describe average value, integral, or intercept.",
+      rigor: 1
+    },
+    medium: {
+      question: "If $f(x)=x^3-2x$, what is $f'(x)$?",
+      correct: "$3x^2-2$",
+      distractors: ["$x^2-2$", "$3x-2$", "$3x^2$"],
+      explanation: "Power rule gives derivative of $x^3$ as $3x^2$ and derivative of $-2x$ as $-2$. Distractors drop terms or powers.",
+      rigor: 2
+    },
+    hard: {
+      question: "If $f'(x)>0$ and $f''(x)<0$ on an interval, how is $f$ behaving?",
+      correct: "Increasing and concave down",
+      distractors: ["Decreasing and concave up", "Increasing and concave up", "Decreasing and concave down"],
+      explanation: "Positive first derivative means increasing; negative second derivative means concave down.",
+      rigor: 3
+    }
+  },
+  {
+    keywords: ["integration", "area between curves", "volume of solids"],
+    easy: {
+      question: "What operation reverses differentiation?",
+      correct: "Antidifferentiation (integration)",
+      distractors: ["Factoring", "Slope averaging", "Matrix inversion"],
+      explanation: "Integration finds antiderivatives; the other operations are unrelated to reversing derivatives.",
+      rigor: 1
+    },
+    medium: {
+      question: "By the Fundamental Theorem of Calculus, if $F(x)=\\int_a^x f(t)dt$, then $F'(x)=$",
+      correct: "$f(x)$",
+      distractors: ["$f(a)$", "$\\int_a^x f(t)dt$", "$f'(x)$"],
+      explanation: "FTC Part I states the derivative of accumulation function is the integrand evaluated at x.",
+      rigor: 2
+    },
+    hard: {
+      question: "For area between curves on $[a,b]$, which setup is correct when upper curve is $u(x)$ and lower is $\\ell(x)$?",
+      correct: "$\\int_a^b (u(x)-\\ell(x))\\,dx$",
+      distractors: ["$\\int_a^b (\\ell(x)-u(x))\\,dx$", "$\\int_a^b u(x)\\ell(x)\\,dx$", "$u(b)-\\ell(a)$"],
+      explanation: "Area uses top-minus-bottom over interval. Other forms can yield negative or non-area quantities.",
+      rigor: 3
+    }
+  },
+  {
+    keywords: ["probability", "inference", "chi-square", "regression", "statistics"],
+    easy: {
+      question: "What is the expected value of a random variable?",
+      correct: "Its long-run weighted average outcome",
+      distractors: ["Its largest possible outcome", "The median outcome only", "The sample size of an experiment"],
+      explanation: "Expected value is a probability-weighted mean, not max/median/sample size.",
+      rigor: 1
+    },
+    medium: {
+      question: "What does a small p-value indicate under the null hypothesis?",
+      correct: "The observed result would be unlikely if the null were true.",
+      distractors: ["The null is definitely false.", "The alternative is definitely true.", "The sample mean equals the population mean."],
+      explanation: "A small p-value measures incompatibility with the null; it does not prove hypotheses with certainty.",
+      rigor: 2
+    },
+    hard: {
+      question: "In linear regression, a residual is:",
+      correct: "Observed value minus predicted value",
+      distractors: ["Predicted value minus observed value always", "Slope times x-value", "Difference between two predictors"],
+      explanation: "Residual = $y-\\hat y$. Other options misdefine residual or confuse with model components.",
+      rigor: 3
+    }
+  },
+  {
+    keywords: ["biology", "cell", "genetics", "evolution", "ecology", "ap biology", "anatomy"],
+    easy: {
+      question: "Which organelle is the primary site of ATP production in eukaryotic cells?",
+      correct: "Mitochondrion",
+      distractors: ["Ribosome", "Golgi apparatus", "Nucleus"],
+      explanation: "Mitochondria perform cellular respiration. Ribosomes make proteins; Golgi modifies/ships proteins; nucleus stores DNA.",
+      rigor: 1
+    },
+    medium: {
+      question: "In DNA replication, what is the role of DNA polymerase?",
+      correct: "Adds nucleotides to build the new DNA strand",
+      distractors: ["Breaks peptide bonds in proteins", "Transports mRNA out of nucleus", "Converts glucose to ATP directly"],
+      explanation: "DNA polymerase synthesizes DNA. The other choices describe unrelated cellular processes.",
+      rigor: 2
+    },
+    hard: {
+      question: "Natural selection requires heritable variation. Why?",
+      correct: "Traits must be passed to offspring for population frequencies to change over generations.",
+      distractors: ["Only environmental changes determine inherited traits.", "Acquired traits are always inherited immediately.", "Selection acts only on dominant alleles."],
+      explanation: "Evolution by selection depends on inherited differences affecting fitness. The distractors misstate inheritance and selection.",
+      rigor: 3
+    }
+  },
+  {
+    keywords: ["chemistry", "stoichiometry", "kinetics", "equilibrium", "thermodynamics", "electrochem"],
+    easy: {
+      question: "What does the coefficient in a balanced chemical equation represent?",
+      correct: "Mole ratio between substances",
+      distractors: ["Atomic number of each element", "Charge on each molecule", "Reaction temperature"],
+      explanation: "Coefficients give relative moles of reactants/products. They do not represent atomic number, charge, or temperature.",
+      rigor: 1
+    },
+    medium: {
+      question: "If reaction temperature increases, what typically happens to reaction rate?",
+      correct: "Rate increases because more particles exceed activation energy.",
+      distractors: ["Rate always decreases.", "Rate is unchanged by temperature.", "Rate depends only on concentration, never temperature."],
+      explanation: "Higher temperature raises kinetic energy and effective collisions. The other statements ignore collision theory.",
+      rigor: 2
+    },
+    hard: {
+      question: "For an exothermic reaction at equilibrium, adding heat will generally:",
+      correct: "Shift equilibrium toward reactants",
+      distractors: ["Shift equilibrium toward products", "Have no effect on equilibrium", "Increase both concentrations equally without shift"],
+      explanation: "Heat acts like a product in exothermic systems; adding heat drives equilibrium left (Le Châtelier).",
+      rigor: 3
+    }
+  },
+  {
+    keywords: ["physics", "kinematics", "dynamics", "energy", "rotation", "waves", "electricity", "magnetism"],
+    easy: {
+      question: "Newton's Second Law is:",
+      correct: "$F=ma$",
+      distractors: ["$F=mv$", "$P=mv$", "$E=mc^2$"],
+      explanation: "Second Law relates net force to mass and acceleration. Other equations represent momentum or mass-energy relation.",
+      rigor: 1
+    },
+    medium: {
+      question: "If net force on an object is zero, its acceleration is:",
+      correct: "Zero",
+      distractors: ["Constantly increasing", "Equal to its velocity", "Always negative"],
+      explanation: "From $F_{net}=ma$, zero net force implies zero acceleration (velocity may still be constant).",
+      rigor: 2
+    },
+    hard: {
+      question: "What remains constant in an isolated system with no external net force?",
+      correct: "Total momentum",
+      distractors: ["Each object's kinetic energy individually", "Each object's velocity individually", "Total force magnitude"],
+      explanation: "Momentum is conserved in isolated systems. Individual energies/velocities may change during interactions.",
+      rigor: 3
+    }
+  },
+  {
+    keywords: ["world history", "us history", "ap world", "ap us history", "european history", "african american", "global studies"],
+    easy: {
+      question: "Primary sources are best defined as:",
+      correct: "Evidence created during the historical period being studied",
+      distractors: ["Any modern textbook summary", "Only sources written by historians", "Any source with a bibliography"],
+      explanation: "Primary sources originate from the time/event. Textbooks and later analyses are secondary or tertiary.",
+      rigor: 1
+    },
+    medium: {
+      question: "Industrialization most directly increased urbanization because it:",
+      correct: "Concentrated wage labor opportunities in cities",
+      distractors: ["Eliminated all agricultural work immediately", "Made transportation impossible", "Reduced need for trade networks"],
+      explanation: "Factories and wage work drew populations into cities. Other options contradict core historical patterns.",
+      rigor: 2
+    },
+    hard: {
+      question: "A defensible causal claim in history requires:",
+      correct: "Specific evidence plus explanation of mechanism linking cause to outcome",
+      distractors: ["Chronological listing of events only", "A single famous quote", "Majority opinion without evidence"],
+      explanation: "Historical causation requires evidence and reasoning, not mere sequence or unsupported authority.",
+      rigor: 3
+    }
+  },
+  {
+    keywords: ["government", "civics", "ap government", "federalism", "constitution", "public policy"],
+    easy: {
+      question: "In the U.S. system, separation of powers means:",
+      correct: "Government power is divided among branches with distinct functions",
+      distractors: ["States have no power", "Congress controls courts directly", "The executive writes constitutional amendments alone"],
+      explanation: "Separation of powers divides authority across legislative, executive, and judicial branches.",
+      rigor: 1
+    },
+    medium: {
+      question: "Judicial review allows courts to:",
+      correct: "Assess whether laws or executive actions violate the Constitution",
+      distractors: ["Pass new statutes directly", "Control election outcomes", "Create budget appropriations"],
+      explanation: "Judicial review is constitutional interpretation, not lawmaking or budgeting.",
+      rigor: 2
+    },
+    hard: {
+      question: "Federalism is best described as:",
+      correct: "A shared system of power between national and state governments",
+      distractors: ["Complete state sovereignty with no national authority", "Only local government control", "Single centralized government with no subnational powers"],
+      explanation: "Federalism blends national and state authority under constitutional allocation.",
+      rigor: 3
+    }
+  },
+  {
+    keywords: ["economics", "macro", "micro", "market", "business cycles", "financial sector"],
+    easy: {
+      question: "In a standard market model, equilibrium occurs where:",
+      correct: "Quantity demanded equals quantity supplied",
+      distractors: ["Price is at its highest value", "Government sets a binding price floor", "Demand and supply both become zero"],
+      explanation: "Equilibrium is the intersection of demand and supply schedules.",
+      rigor: 1
+    },
+    medium: {
+      question: "If demand increases while supply is unchanged, equilibrium price usually:",
+      correct: "Rises",
+      distractors: ["Falls", "Stays fixed in all cases", "Becomes zero"],
+      explanation: "Higher demand shifts the demand curve right, increasing equilibrium price (all else equal).",
+      rigor: 2
+    },
+    hard: {
+      question: "Contractionary monetary policy is primarily used to:",
+      correct: "Reduce inflationary pressure",
+      distractors: ["Increase unemployment intentionally forever", "Lower interest rates quickly", "Expand aggregate demand immediately"],
+      explanation: "Contractionary policy restrains inflation, often by raising rates and slowing demand growth.",
+      rigor: 3
+    }
+  },
+  {
+    keywords: ["computer science", "ap computer science", "data science", "cybersecurity", "web design", "algorithms", "arrays", "recursion"],
+    easy: {
+      question: "An algorithm is:",
+      correct: "A finite sequence of unambiguous steps to solve a problem",
+      distractors: ["Any line of code regardless of purpose", "A variable storing user input", "A visual design style guide"],
+      explanation: "Algorithms are step-by-step procedures, not arbitrary code fragments or UI styles.",
+      rigor: 1
+    },
+    medium: {
+      question: "In recursion, the base case is essential because it:",
+      correct: "Stops repeated self-calls and prevents infinite recursion",
+      distractors: ["Increases memory usage intentionally", "Replaces all loops automatically", "Makes output random for edge cases"],
+      explanation: "Base cases terminate recursion. Without one, recursion may not halt.",
+      rigor: 2
+    },
+    hard: {
+      question: "Why is time complexity analysis useful?",
+      correct: "It predicts how runtime scales as input size grows",
+      distractors: ["It guarantees bug-free code", "It measures only memory layout style", "It removes the need for testing"],
+      explanation: "Complexity describes growth behavior; correctness and testing are still required.",
+      rigor: 3
+    }
+  },
+  {
+    keywords: ["spanish", "french", "ap spanish", "ap french", "foreign language"],
+    easy: {
+      question: "Why must subject-verb agreement be checked in sentence writing?",
+      correct: "Because verb forms must match person/number of the subject",
+      distractors: ["Because punctuation determines verb tense", "Because nouns always control object pronouns", "Because agreement is optional in formal writing"],
+      explanation: "Agreement is a core grammar rule; the other statements are incorrect.",
+      rigor: 1
+    },
+    medium: {
+      question: "When narrating completed past actions in sequence, which approach is most accurate?",
+      correct: "Use the past tense forms that mark completed events in context",
+      distractors: ["Use present tense throughout for consistency", "Use infinitives to avoid agreement errors", "Use future tense to indicate certainty"],
+      explanation: "Completed past events require context-appropriate past forms; other choices break timeline meaning.",
+      rigor: 2
+    },
+    hard: {
+      question: "In advanced writing tasks, cohesive transitions are important because they:",
+      correct: "Clarify logical relationships between ideas",
+      distractors: ["Replace the need for accurate grammar", "Eliminate the need for evidence", "Only improve sentence length"],
+      explanation: "Transitions signal cause/contrast/addition and strengthen coherence, but do not replace grammar or evidence.",
+      rigor: 3
+    }
+  },
+  {
+    keywords: ["english", "ap english", "reading", "writing", "act english", "sat reading"],
+    easy: {
+      question: "A strong claim in analytical writing should be:",
+      correct: "Specific, arguable, and supportable with textual evidence",
+      distractors: ["A broad theme with no textual support", "A summary of the passage only", "A personal preference unrelated to the prompt"],
+      explanation: "Analytical claims must be arguable and evidence-based. Summary or unsupported opinion is insufficient.",
+      rigor: 1
+    },
+    medium: {
+      question: "Which revision best strengthens paragraph coherence?",
+      correct: "Add a transition that makes the logical link between sentences explicit",
+      distractors: ["Add longer quotations with no explanation", "Replace verbs with more complex synonyms only", "Delete topic sentence to save space"],
+      explanation: "Coherence depends on explicit logical connections and structure, not quote length or inflated diction.",
+      rigor: 2
+    },
+    hard: {
+      question: "In rhetorical analysis, the strongest evidence use is to:",
+      correct: "Explain how specific language choices produce audience effects",
+      distractors: ["List devices without analysis", "Count metaphors and stop", "Describe your agreement with the author's opinion only"],
+      explanation: "Rhetorical analysis requires mechanism: language choice -> audience effect.",
+      rigor: 3
+    }
+  }
+];
+
+function pickTemplate(domain: "math" | "science" | "social" | "english" | "language" | "technology", subject: string, subtopic: string): { easy: GeneratedTemplate; medium: GeneratedTemplate; hard: GeneratedTemplate } {
+  const key = `${normalize(subject)} ${normalize(subtopic)}`;
+  const matched = CURRICULUM_TEMPLATES.find((entry) => entry.keywords.some((k) => key.includes(k)));
+  if (matched) return { easy: matched.easy, medium: matched.medium, hard: matched.hard };
+
+  const fallbackByDomain: Record<typeof domain, { easy: GeneratedTemplate; medium: GeneratedTemplate; hard: GeneratedTemplate }> = {
+    math: {
+      easy: {
+        question: `Which statement correctly describes a core idea in ${subtopic}?`,
+        correct: "The concept uses defined rules and constraints to produce valid solutions.",
+        distractors: ["The concept ignores constraints when calculations are difficult.", "The concept is solved only by memorizing one formula.", "The concept has no relationship to problem conditions."],
+        explanation: "Math concepts depend on rule-based structure and constraints; distractors contradict this.",
+        rigor: 1
+      },
+      medium: {
+        question: `In a typical ${subtopic} problem, what should be identified first?`,
+        correct: "Known quantities, unknowns, and any domain/unit constraints",
+        distractors: ["Only the final answer format", "The longest possible method", "Whether the answer choices look symmetric"],
+        explanation: "Accurate setup starts with knowns/unknowns/constraints; other choices are non-methodical.",
+        rigor: 2
+      },
+      hard: {
+        question: `For hard ${subtopic} items, which checkpoint best protects accuracy?`,
+        correct: "Validate assumptions and verify the final result against the original conditions",
+        distractors: ["Trust the first result if algebra steps look clean", "Round early to avoid arithmetic complexity", "Switch methods at the last step without re-checking setup"],
+        explanation: "Hard items require explicit validation against original constraints.",
+        rigor: 3
+      }
+    },
+    science: {
+      easy: {
+        question: `What is a key feature of scientific understanding in ${subtopic}?`,
+        correct: "Claims are supported by observable evidence and testable reasoning.",
+        distractors: ["Claims are accepted when repeated often online.", "Claims are true if they sound intuitive.", "Claims do not require measurable evidence."],
+        explanation: "Science relies on testable evidence; distractors reject core scientific practice.",
+        rigor: 1
+      },
+      medium: {
+        question: `What improves reliability in a ${subtopic} experiment?`,
+        correct: "Clear controls, repeated trials, and accurate measurement",
+        distractors: ["A single dramatic result", "Skipping control variables for speed", "Removing uncertainty language from conclusions"],
+        explanation: "Reliability comes from controlled, repeatable methods.",
+        rigor: 2
+      },
+      hard: {
+        question: `Which conclusion is strongest for a hard ${subtopic} prompt?`,
+        correct: "A conclusion that links claim, evidence, mechanism, and uncertainty limits",
+        distractors: ["A conclusion that is confident but unsourced", "A conclusion based only on one graph label", "A conclusion that ignores alternative mechanisms"],
+        explanation: "High-level science answers integrate evidence and mechanism with calibrated certainty.",
+        rigor: 3
+      }
+    },
+    social: {
+      easy: {
+        question: `What makes a social studies claim in ${subtopic} historically or civically valid?`,
+        correct: "Specific evidence anchored to context",
+        distractors: ["General statements with no source detail", "A claim repeated by many people", "Any claim with strong wording"],
+        explanation: "Valid social-studies claims require contextualized evidence.",
+        rigor: 1
+      },
+      medium: {
+        question: `In ${subtopic}, what is the best way to support a causal claim?`,
+        correct: "Show a mechanism linking evidence to outcome",
+        distractors: ["List dates only", "Use one anecdote without comparison", "Rely on certainty language over sources"],
+        explanation: "Causal claims require mechanism, not just chronology or confidence.",
+        rigor: 2
+      },
+      hard: {
+        question: `For difficult ${subtopic} analysis, which response is strongest?`,
+        correct: "One that addresses counterevidence while defending the main claim with sources",
+        distractors: ["One that ignores opposing evidence", "One that summarizes events with no argument", "One that gives opinion without sourced support"],
+        explanation: "Strong analysis handles counterevidence and maintains sourced reasoning.",
+        rigor: 3
+      }
+    },
+    english: {
+      easy: {
+        question: `In ${subtopic}, a strong analytical response begins with:`,
+        correct: "A clear claim that directly answers the prompt",
+        distractors: ["A general summary of the text", "A personal opinion without evidence", "A list of literary terms without argument"],
+        explanation: "Prompt-aligned claim is foundational; other options lack argument structure.",
+        rigor: 1
+      },
+      medium: {
+        question: `What most improves body paragraph quality in ${subtopic}?`,
+        correct: "Explaining how evidence supports the claim",
+        distractors: ["Adding more quotes without interpretation", "Using complex words instead of analysis", "Removing transitions to shorten paragraphs"],
+        explanation: "Explanation links evidence to claim; quote quantity alone is insufficient.",
+        rigor: 2
+      },
+      hard: {
+        question: `For difficult ${subtopic} tasks, what revision step has highest impact?`,
+        correct: "Check prompt alignment, evidence relevance, and logical flow",
+        distractors: ["Check punctuation only", "Add one extra quote regardless of fit", "Delete qualifiers to sound more certain"],
+        explanation: "Top-scoring writing is argument-coherent and evidence-driven.",
+        rigor: 3
+      }
+    },
+    language: {
+      easy: {
+        question: `In ${subtopic}, grammatical accuracy requires:`,
+        correct: "Correct agreement between sentence elements",
+        distractors: ["Using long words whenever possible", "Keeping one tense in every context", "Ignoring register differences"],
+        explanation: "Agreement is fundamental; vocabulary complexity and forced tense choices do not replace grammar.",
+        rigor: 1
+      },
+      medium: {
+        question: `What makes a translation/response in ${subtopic} most accurate?`,
+        correct: "Preserving intended meaning with context-appropriate grammar and register",
+        distractors: ["Literal word-for-word substitution only", "Avoiding connectors to reduce errors", "Using only present-tense forms"],
+        explanation: "High-quality language use balances meaning, grammar, and context.",
+        rigor: 2
+      },
+      hard: {
+        question: `For advanced ${subtopic} writing, which method best improves coherence?`,
+        correct: "Use transitions that show clear logical relationships between ideas",
+        distractors: ["Repeat key nouns instead of using transitions", "Prioritize rare vocabulary over clarity", "Shorten all sentences regardless of meaning"],
+        explanation: "Cohesion depends on logical linking, not surface complexity.",
+        rigor: 3
+      }
+    },
+    technology: {
+      easy: {
+        question: `A correct computational solution in ${subtopic} requires:`,
+        correct: "Clearly defined inputs, outputs, and rules",
+        distractors: ["Only short code", "Only advanced syntax", "Only a passing visual demo"],
+        explanation: "Correctness begins with well-defined problem contracts.",
+        rigor: 1
+      },
+      medium: {
+        question: `What is the best way to catch hidden bugs in ${subtopic}?`,
+        correct: "Test edge cases and verify expected outcomes",
+        distractors: ["Test only one normal case", "Assume compiler warnings cover logic errors", "Remove checks to improve speed first"],
+        explanation: "Edge-case testing is essential for robust logic.",
+        rigor: 2
+      },
+      hard: {
+        question: `For hard ${subtopic} tasks, what strengthens algorithm justification?`,
+        correct: "Explain correctness and complexity under expected input constraints",
+        distractors: ["Claim it worked once on sample input", "Choose the shortest code version automatically", "Skip complexity analysis if runtime seems fast"],
+        explanation: "Formal justification uses constraints, correctness, and scaling behavior.",
+        rigor: 3
+      }
+    }
+  };
+
+  return fallbackByDomain[domain];
+}
+
+function buildOptionsWithStableOrder(correct: string, distractors: [string, string, string], seed: string): { choices: string[]; answerIndex: number } {
+  const all = [correct, ...distractors];
+  const shift = Math.abs(seed.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0)) % all.length;
+  const choices = all.map((_, idx) => all[(idx + shift) % all.length]);
+  const answerIndex = choices.findIndex((c) => c === correct);
+  return { choices, answerIndex };
+}
+
+function sanitizeQuestionTemplate(template: GeneratedTemplate, subject: string, subtopic: string): GeneratedTemplate {
+  const lowered = template.question.toLowerCase();
+  const hasBannedPhrase = BANNED_PATTERNS.some((pattern) => lowered.includes(pattern));
+  if (!hasBannedPhrase) return template;
+
+  return {
+    question: `Which statement correctly describes a core concept from ${subject} (${subtopic})?`,
+    correct: template.correct,
+    distractors: template.distractors,
+    explanation: template.explanation,
+    rigor: template.rigor
+  };
+}
+
 function buildGeneratedChoices(
   domain: "math" | "science" | "social" | "english" | "language" | "technology",
   subject: string,
@@ -7460,345 +7990,21 @@ function buildGeneratedChoices(
   difficulty: "easy" | "medium" | "hard",
   variant: number
 ): Pick<Question, "question" | "choices" | "answerIndex" | "explanation" | "rigor"> {
-  if (domain === "math") {
-    if (variant === 1) {
-      return {
-        question: `In ${subject} (${subtopic}), which plan is strongest for a timed exam item?`,
-        choices: [
-          "Define givens/constraints, choose the matching method, solve, then verify the result in context.",
-          "Start with a familiar formula quickly, then adjust steps if the answer looks off.",
-          "Approximate early to save time, then skip full verification if choices are close.",
-          "Run multiple methods simultaneously and select whichever ends first."
-        ],
-        answerIndex: 0,
-        explanation: "High-rigor math responses require structured setup, valid assumptions, and end-of-solution verification.",
-        rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
-      };
-    }
-    if (variant === 2) {
-      return {
-        question: `A student solved a ${subtopic} problem correctly but got an impossible value. What is the best correction move?`,
-        choices: [
-          "Re-check domain/sign/unit constraints and substitute into the original statement.",
-          "Keep the algebra as final since symbolic manipulation was valid.",
-          "Round the result to a nearby expected value from memory.",
-          "Switch to a different formula without revisiting assumptions."
-        ],
-        answerIndex: 0,
-        explanation: "Impossible values often come from domain/sign/unit mistakes; validation against the original condition is required.",
-        rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
-      };
-    }
-    if (variant === 3) {
-      return {
-        question: `Which justification is strongest when comparing two methods for ${subtopic}?`,
-        choices: [
-          "Prefer the method that preserves constraints clearly and minimizes hidden assumption risk.",
-          "Prefer the shortest method even if it obscures where constraints are enforced.",
-          "Prefer the method that matches your class notes wording most closely.",
-          "Prefer whichever method gives an integer-looking answer."
-        ],
-        answerIndex: 0,
-        explanation: "Method quality is about validity and interpretability, not appearance or speed alone.",
-        rigor: 3
-      };
-    }
-    return {
-      question: `Before finalizing a hard ${subtopic} answer, what checkpoint is most exam-reliable?`,
-      choices: [
-        "Confirm assumptions, test reasonableness, and verify the final value against problem constraints.",
-        "Only check arithmetic signs in the last line.",
-        "Compare your answer to one teammate's estimate.",
-        "Trust the first complete derivation to avoid overthinking."
-      ],
-      answerIndex: 0,
-      explanation: "Hard items are won by full validation, not partial checks.",
-      rigor: 3
-    };
-  }
+  const family = pickTemplate(domain, subject, subtopic);
+  const picked = difficulty === "easy" ? family.easy : difficulty === "medium" ? family.medium : family.hard;
+  const sanitized = sanitizeQuestionTemplate(picked, subject, subtopic);
+  const finalized = buildOptionsWithStableOrder(
+    sanitized.correct,
+    sanitized.distractors,
+    `${subject}:${subtopic}:${difficulty}:${variant}`
+  );
 
-  if (domain === "science") {
-    if (variant === 1) {
-      return {
-        question: `In ${subject} (${subtopic}), which claim is most defensible scientifically?`,
-        choices: [
-          "A claim supported by reproducible evidence, clear controls, and mechanism-level reasoning.",
-          "A claim supported by one large effect size, even without replication.",
-          "A claim aligned with prior theory, regardless of current data mismatch.",
-          "A claim consistent with the majority opinion of students."
-        ],
-        answerIndex: 0,
-        explanation: "Scientific strength comes from reproducibility, controls, and mechanism-supported evidence.",
-        rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
-      };
-    }
-    if (variant === 2) {
-      return {
-        question: `Two studies in ${subtopic} disagree. What is the strongest next step?`,
-        choices: [
-          "Audit design quality, variable control, and reproducibility before weighting conclusions.",
-          "Adopt the study with the stronger headline conclusion.",
-          "Treat both studies as equally valid because both are published.",
-          "Choose the result with the lowest reported p-value only."
-        ],
-        answerIndex: 0,
-        explanation: "Conflicting results require methodological comparison and replication weighting.",
-        rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
-      };
-    }
-    if (variant === 3) {
-      return {
-        question: `What most improves causal inference for a hard ${subtopic} prompt?`,
-        choices: [
-          "Explicit controls, repeated trials, and careful confounder management.",
-          "A larger sample size without intervention design improvements.",
-          "A model fit to historical data without new validation.",
-          "An expert summary replacing direct data analysis."
-        ],
-        answerIndex: 0,
-        explanation: "Causal inference quality depends on design controls and confounder handling.",
-        rigor: 3
-      };
-    }
-    return {
-      question: `Which review check is strongest before submitting a ${subtopic} explanation?`,
-      choices: [
-        "State claim-evidence-mechanism links and include uncertainty limits.",
-        "Restate the claim with stronger wording for confidence.",
-        "Remove caveats so the answer appears definitive.",
-        "Focus on numerical output and omit interpretation."
-      ],
-      answerIndex: 0,
-      explanation: "High-quality science answers tie claims to evidence/mechanism with calibrated uncertainty.",
-      rigor: 3
-    };
-  }
-
-  if (domain === "technology") {
-    if (variant === 1) {
-      return {
-        question: `For ${subject} (${subtopic}), which approach produces the most reliable solution?`,
-        choices: [
-          "Define input/output constraints, handle edge cases, and verify behavior with targeted tests.",
-          "Optimize runtime first, then patch correctness issues if discovered.",
-          "Follow a known pattern exactly, even if constraints differ.",
-          "Prefer concise code over explicit checks for invalid inputs."
-        ],
-        answerIndex: 0,
-        explanation: "Reliable technical solutions begin with correctness and constraints, then optimization.",
-        rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
-      };
-    }
-    if (variant === 2) {
-      return {
-        question: `A program passes normal cases but fails boundary conditions in ${subtopic}. Best fix strategy?`,
-        choices: [
-          "Trace boundary inputs explicitly, update invariants, and re-test with focused cases.",
-          "Increase code comments and keep logic unchanged.",
-          "Refactor into shorter functions without new tests.",
-          "Assume user input will avoid edge conditions."
-        ],
-        answerIndex: 0,
-        explanation: "Boundary failures are corrected through explicit edge-case tracing and regression tests.",
-        rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
-      };
-    }
-    if (variant === 3) {
-      return {
-        question: `Which argument is strongest when selecting an algorithm in ${subtopic}?`,
-        choices: [
-          "The choice is justified by constraints, expected data scale, and correctness guarantees.",
-          "The choice is standard in tutorials, so it is safest by default.",
-          "The choice uses fewer lines of code and is easier to memorize.",
-          "The choice appears fastest on one manually selected input."
-        ],
-        answerIndex: 0,
-        explanation: "Algorithm selection should be constraint-driven and evidence-based.",
-        rigor: 3
-      };
-    }
-    return {
-      question: `What is the highest-value final check for hard ${subtopic} tasks?`,
-      choices: [
-        "Run representative + adversarial tests and verify expected behavior contract-by-contract.",
-        "Run a single successful demo path and submit.",
-        "Rely on static typing alone as proof of correctness.",
-        "Trust complexity estimates without execution checks."
-      ],
-      answerIndex: 0,
-      explanation: "Hard technical tasks need adversarial testing and contract validation.",
-      rigor: 3
-    };
-  }
-
-  if (domain === "language") {
-    if (variant === 1) {
-      return {
-        question: `In ${subject} (${subtopic}), what makes a response most accurate?`,
-        choices: [
-          "Meaning-accurate phrasing with correct tense/agreement and context-appropriate register.",
-          "Literal word-for-word translation to preserve dictionary meaning.",
-          "Simplifying grammar to avoid complex structures entirely.",
-          "Using advanced vocabulary even when context shifts meaning."
-        ],
-        answerIndex: 0,
-        explanation: "Strong language responses balance meaning, grammar control, and register.",
-        rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
-      };
-    }
-    if (variant === 2) {
-      return {
-        question: `A sentence is grammatically close but contextually off in ${subtopic}. Best revision move?`,
-        choices: [
-          "Adjust tense/mood and connector logic so meaning matches discourse context.",
-          "Keep grammar unchanged and replace only one vocabulary word.",
-          "Drop connectors to reduce syntax complexity.",
-          "Rewrite with present tense throughout for consistency."
-        ],
-        answerIndex: 0,
-        explanation: "Context-driven tense/mood and transitions are key to high-level language performance.",
-        rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
-      };
-    }
-    if (variant === 3) {
-      return {
-        question: `Which strategy best improves a hard ${subtopic} written response?`,
-        choices: [
-          "Plan intent/register first, then enforce agreement and cohesion during revision.",
-          "Prioritize uncommon vocabulary over coherence.",
-          "Use short isolated sentences to avoid agreement errors.",
-          "Avoid nuanced connectors so grammar is simpler."
-        ],
-        answerIndex: 0,
-        explanation: "Top responses start with intent and finish with coherence/accuracy checks.",
-        rigor: 3
-      };
-    }
-    return {
-      question: `What final check raises reliability on ${subtopic} assessments?`,
-      choices: [
-        "Read for intended meaning, then proof agreement, tense consistency, and discourse flow.",
-        "Read for spelling only, since grammar was already drafted.",
-        "Replace repeated words without checking syntax.",
-        "Trust first draft rhythm and avoid revisions."
-      ],
-      answerIndex: 0,
-      explanation: "Language reliability depends on meaning review plus grammar and cohesion proofing.",
-      rigor: 3
-    };
-  }
-
-  if (domain === "english") {
-    if (variant === 1) {
-      return {
-        question: `For ${subject} (${subtopic}), which thesis approach is strongest?`,
-        choices: [
-          "A defensible claim that directly answers the prompt and previews evidence-based reasoning.",
-          "A broad theme statement that could fit many prompts.",
-          "A summary of the passage without argument.",
-          "A personal opinion detached from textual support."
-        ],
-        answerIndex: 0,
-        explanation: "Strong English responses are prompt-specific, arguable, and evidence-ready.",
-        rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
-      };
-    }
-    if (variant === 2) {
-      return {
-        question: `A paragraph in ${subtopic} has evidence but weak analysis. What is best revision?`,
-        choices: [
-          "Add reasoning that explains how each detail proves the claim and addresses alternatives.",
-          "Insert more quotes without interpreting them.",
-          "Shorten analysis to preserve pacing.",
-          "Replace evidence with stronger adjectives."
-        ],
-        answerIndex: 0,
-        explanation: "Analysis quality comes from reasoning links, not quote quantity or tone.",
-        rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
-      };
-    }
-    if (variant === 3) {
-      return {
-        question: `Which method best improves hard ${subtopic} timed writing performance?`,
-        choices: [
-          "Outline claim-evidence-reasoning structure first, then draft and revise for precision.",
-          "Draft continuously without outline to maximize word count.",
-          "Memorize one template and force all prompts into it.",
-          "Prioritize stylistic flourishes over argument clarity."
-        ],
-        answerIndex: 0,
-        explanation: "Timed strength comes from structure planning plus targeted revision.",
-        rigor: 3
-      };
-    }
-    return {
-      question: `What is the best final quality check before submitting a ${subtopic} response?`,
-      choices: [
-        "Verify prompt alignment, evidence relevance, and logical coherence sentence-to-sentence.",
-        "Check only grammar mechanics and ignore argument flow.",
-        "Add one extra quote even if analysis is incomplete.",
-        "Shorten body paragraphs to reduce risk."
-      ],
-      answerIndex: 0,
-      explanation: "Final quality is judged by argument coherence and evidence use, not mechanics alone.",
-      rigor: 3
-    };
-  }
-
-  // social
-  if (variant === 1) {
-    return {
-      question: `In ${subject} (${subtopic}), which argument is most defensible?`,
-      choices: [
-        "A claim supported by specific evidence, contextualized causation, and explicit assumptions.",
-        "A claim that aligns with common narratives and broad trends.",
-        "A claim based on one vivid case study without comparison.",
-        "A claim that is concise and confident but minimally sourced."
-      ],
-      answerIndex: 0,
-      explanation: "High-quality social studies arguments require evidence, context, and causal logic.",
-      rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
-    };
-  }
-  if (variant === 2) {
-    return {
-      question: `Two interpretations in ${subtopic} conflict. Best evaluation strategy?`,
-      choices: [
-        "Compare source quality, assumptions, and explanatory power against counterevidence.",
-        "Prefer the interpretation with the broadest claim.",
-        "Average both interpretations into a compromise answer.",
-        "Select the interpretation used most often in class examples."
-      ],
-      answerIndex: 0,
-      explanation: "Interpretations should be weighed by evidence quality and causal explanatory strength.",
-      rigor: difficulty === "easy" ? 1 : difficulty === "medium" ? 2 : 3
-    };
-  }
-  if (variant === 3) {
-    return {
-      question: `What most improves a hard-response score in ${subtopic}?`,
-      choices: [
-        "Address counterarguments directly while maintaining evidence-backed causal reasoning.",
-        "Increase detail density without clarifying argument structure.",
-        "Focus only on chronology and omit interpretation.",
-        "Use assertive language to strengthen persuasion."
-      ],
-      answerIndex: 0,
-      explanation: "High scores require argument structure, counterargument handling, and evidence integration.",
-      rigor: 3
-    };
-  }
   return {
-    question: `Before submitting a hard ${subtopic} response, which check is most important?`,
-    choices: [
-      "Confirm thesis-evidence-causation alignment and explicitly state limits/assumptions.",
-      "Reduce qualifiers to sound more decisive.",
-      "Add one extra historical/economic term regardless of fit.",
-      "Reorder paragraphs without revisiting evidence quality."
-    ],
-    answerIndex: 0,
-    explanation: "Final social studies quality depends on aligned thesis, evidence, and causal limits.",
-    rigor: 3
+    question: sanitized.question,
+    choices: finalized.choices,
+    answerIndex: finalized.answerIndex,
+    explanation: sanitized.explanation,
+    rigor: sanitized.rigor
   };
 }
 
@@ -7847,8 +8053,13 @@ function buildExpandedCoverageQuestions(): Question[] {
 
 const EXPANDED_COVERAGE_QUESTIONS = buildExpandedCoverageQuestions();
 
+function passesPromptQualityFilter(questionText: string): boolean {
+  const normalized = questionText.trim().toLowerCase();
+  return !BANNED_PATTERNS.some((pattern) => normalized.includes(pattern));
+}
+
 export const ACTIVE_QUESTION_BANK = [...QUESTION_BANK, ...EXPANDED_COVERAGE_QUESTIONS].filter(
-  (q) => !q.id.startsWith("auto-") && !q.id.startsWith("hq2-")
+  (q) => !q.id.startsWith("auto-") && !q.id.startsWith("hq2-") && passesPromptQualityFilter(q.question)
 );
 
 export function getQuestionPool(subject: string, subtopic: string, difficulty?: string): Question[] {

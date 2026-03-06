@@ -35,7 +35,7 @@ function LearnActiveContent() {
               Study Room
             </div>
             <h1 className="text-3xl md:text-4xl font-headline tracking-tight">{packet.title}</h1>
-            <p className="text-muted-foreground font-medium">{packet.examUse}</p>
+            <p className="text-muted-foreground font-medium">{packet.studyGuide}</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" className="rounded-xl" asChild>
@@ -52,17 +52,17 @@ function LearnActiveContent() {
           <div className="space-y-4 pb-8">
             <Card className="border bg-muted/20">
               <CardHeader className="pb-2">
-                <CardTitle className="text-lg">How This Unit Is Tested</CardTitle>
+                <CardTitle className="text-lg">1) Study Guide For This Unit</CardTitle>
               </CardHeader>
-              <CardContent className="text-sm text-muted-foreground">{packet.overview}</CardContent>
+              <CardContent className="text-sm text-muted-foreground">{packet.studyGuide}</CardContent>
             </Card>
 
             <Card className="border">
               <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Core Ideas You Must Know</CardTitle>
+                <CardTitle className="text-lg">2) Key Concepts</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 text-sm">
-                {packet.keyIdeas.map((idea) => (
+                {packet.keyConcepts.map((idea) => (
                   <p key={idea}>• {idea}</p>
                 ))}
               </CardContent>
@@ -70,44 +70,64 @@ function LearnActiveContent() {
 
             <Card className="border">
               <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Method Checklist</CardTitle>
+                <CardTitle className="text-lg">3) Important Terms</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 text-sm">
-                {packet.keySteps.map((step) => (
-                  <p key={step}>• {step}</p>
+                {packet.keyTerms.map((term) => (
+                  <p key={term.term}><span className="font-semibold">{term.term}:</span> {term.definition}</p>
                 ))}
               </CardContent>
             </Card>
 
             <Card className="border">
               <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Memory Sheet (High-Value Facts)</CardTitle>
+                <CardTitle className="text-lg">4) Core Processes / Mechanisms</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2 text-sm">
-                {packet.memorySheet.map((fact) => (
-                  <p key={fact}>• {fact}</p>
+              <CardContent className="space-y-4 text-sm">
+                {packet.coreProcesses.map((process) => (
+                  <div key={process.name} className="space-y-1">
+                    <p className="font-semibold">{process.name}</p>
+                    {process.steps.map((step) => (
+                      <p key={`${process.name}-${step}`}>• {step}</p>
+                    ))}
+                  </div>
                 ))}
               </CardContent>
             </Card>
 
             <Card className="border">
               <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Common Test Traps</CardTitle>
+                <CardTitle className="text-lg">5) Important Formulas</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 text-sm">
-                {packet.commonTraps.map((trap) => (
-                  <p key={trap}>• {trap}</p>
+                {packet.importantFormulas.length === 0 ? (
+                  <p className="text-muted-foreground">No core formulas for this unit. Focus on concepts, vocabulary, and process execution.</p>
+                ) : (
+                  packet.importantFormulas.map((formula) => (
+                    <p key={formula.expression}><span className="font-semibold">{formula.expression}</span> — {formula.meaning}</p>
+                  ))
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="border">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg">6) Real Examples</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm">
+                {packet.realExamples.map((example) => (
+                  <p key={example}>• {example}</p>
                 ))}
               </CardContent>
             </Card>
 
             <Card className="border">
               <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Worked Examples</CardTitle>
+                <CardTitle className="text-lg">7) Practice Questions (With Answers + Explanations)</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {packet.workedExamples.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">No solved examples were found for this unit yet. Use the memory sheet and then switch to practice mode.</p>
+                  <p className="text-sm text-muted-foreground">No solved examples were found for this unit yet. Use the study guide sections and then switch to practice mode.</p>
                 ) : (
                   packet.workedExamples.map((example, index) => (
                     <div key={example.id} className="border rounded-xl p-4 bg-muted/20 space-y-2">
@@ -116,8 +136,8 @@ function LearnActiveContent() {
                         <span className="text-[10px] font-bold uppercase bg-white border px-2 py-1 rounded">{example.difficulty}</span>
                       </div>
                       <MathText text={example.question} className="text-sm font-medium text-foreground" />
-                      <p className="text-xs text-muted-foreground">Answer target: <span className="font-semibold text-foreground">{example.answerPreview}</span></p>
-                      <p className="text-sm text-muted-foreground leading-relaxed">Solution: {example.solution}</p>
+                      <p className="text-xs text-muted-foreground">Correct Answer: <span className="font-semibold text-foreground">{example.correctAnswer}</span></p>
+                      <p className="text-sm text-muted-foreground leading-relaxed">Explanation: {example.explanation}</p>
                     </div>
                   ))
                 )}

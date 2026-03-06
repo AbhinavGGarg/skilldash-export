@@ -4,315 +4,329 @@ import { getGroupNameForCourse } from "@/lib/course-catalog";
 export type WorkedExample = {
   id: string;
   question: string;
-  solution: string;
   difficulty: "easy" | "medium" | "hard";
-  answerPreview: string;
+  correctAnswer: string;
+  explanation: string;
 };
 
-export type RetrievalDrill = {
-  prompt: string;
-  answer: string;
+export type KeyTerm = {
+  term: string;
+  definition: string;
+};
+
+export type ProcessBlock = {
+  name: string;
+  steps: string[];
+};
+
+export type FormulaBlock = {
+  expression: string;
+  meaning: string;
 };
 
 export type LearnPacket = {
   title: string;
   unitLabel: string;
-  overview: string;
-  examUse: string;
-  keyIdeas: string[];
-  keySteps: string[];
-  memorySheet: string[];
-  commonTraps: string[];
+  studyGuide: string;
+  keyConcepts: string[];
+  keyTerms: KeyTerm[];
+  coreProcesses: ProcessBlock[];
+  importantFormulas: FormulaBlock[];
+  realExamples: string[];
   workedExamples: WorkedExample[];
-  retrievalDrills: RetrievalDrill[];
+  retrievalDrills: Array<{ prompt: string; answer: string }>;
   studyPlan: string[];
 };
 
-const DOMAIN_OVERVIEW: Record<string, string> = {
-  Mathematics:
-    "This unit is scored on procedural accuracy plus interpretation. You need setup, execution, and validation under timed pressure.",
-  Science:
-    "This unit is scored on claim-evidence-reasoning quality. You need causal logic, variable control, and data interpretation.",
-  "Social Studies":
-    "This unit is scored on argument quality with evidence. You need contextualization, source analysis, and defensible reasoning.",
-  Technology:
-    "This unit is scored on correctness and design quality. You need robust logic, edge-case handling, and clear justification.",
-  Languages:
-    "This unit is scored on meaning precision and grammar control. You need accurate form, coherent expression, and context-appropriate language.",
-  "Foreign Language":
-    "This unit is scored on meaning precision and grammar control. You need accurate form, coherent expression, and context-appropriate language.",
-  English:
-    "This unit is scored on analytical reading and argument writing quality. You need evidence-backed claims, coherent organization, and control of style.",
-  "SAT Prep":
-    "This unit is scored on speed plus precision under timed test conditions. You need fast pattern recognition and strict error control.",
-  "ACT Prep":
-    "This unit is scored on accuracy and pacing. You need clear strategy, elimination discipline, and evidence-based answer selection.",
-  General:
-    "This unit is scored on whether your reasoning is complete, evidence-backed, and checked for errors."
+type KnowledgeTemplate = {
+  concepts: string[];
+  terms: KeyTerm[];
+  processes: ProcessBlock[];
+  formulas: FormulaBlock[];
+  examples: string[];
 };
 
-const DOMAIN_STEPS: Record<string, string[]> = {
-  Mathematics: [
-    "Identify givens, unknowns, and constraints before computing.",
-    "Choose the method that matches structure (algebraic, graphical, numerical, or calculus-based).",
-    "Execute symbolically, then check domain/sign/unit conditions.",
-    "Interpret the final value in context, not just as a raw number."
-  ],
-  Science: [
-    "Write the claim and exactly what evidence supports it.",
-    "Track variables: manipulated, measured, controlled, and confounded.",
-    "Evaluate mechanism strength and alternative explanations.",
-    "State confidence level with uncertainty and limits."
-  ],
-  "Social Studies": [
-    "State the thesis with historical/economic context.",
-    "Use specific evidence and source quality checks.",
-    "Compare alternatives and address counterevidence.",
-    "Conclude with causal logic and trade-offs."
-  ],
-  Technology: [
-    "Define input/output contract and constraints.",
-    "Trace logic on normal and edge cases.",
-    "Evaluate time/space trade-offs and failure paths.",
-    "Validate with targeted tests before finalizing."
-  ],
-  Languages: [
-    "Determine communicative intent and register first.",
-    "Select tense/agreement/syntax to match context.",
-    "Refine connectors and transitions for coherence.",
-    "Proofread for form accuracy and nuance."
-  ],
-  "Foreign Language": [
-    "Determine communicative intent and register first.",
-    "Select tense/agreement/syntax to match context.",
-    "Refine connectors and transitions for coherence.",
-    "Proofread for form accuracy and nuance."
-  ],
-  English: [
-    "Annotate claim, evidence, and rhetorical moves while reading.",
-    "Build a thesis that directly answers the prompt.",
-    "Use quotes or details strategically, then explain significance.",
-    "Revise for clarity, cohesion, and precision."
-  ],
-  "SAT Prep": [
-    "Read the prompt type first, then the relevant line range.",
-    "Eliminate choices using concrete textual/math evidence.",
-    "Prioritize high-yield methods over long derivations.",
-    "Track pacing checkpoints every section block."
-  ],
-  "ACT Prep": [
-    "Classify the question type before solving.",
-    "Use evidence-first elimination to avoid trap options.",
-    "Apply time-boxing and skip-return strategy.",
-    "Verify final selections against passage/data constraints."
-  ],
-  General: [
-    "Clarify what is asked.",
-    "Apply the right framework.",
-    "Check assumptions.",
-    "Verify final answer independently."
-  ]
+const DOMAIN_DEFAULTS: Record<string, KnowledgeTemplate> = {
+  Mathematics: {
+    concepts: [
+      "Translate word statements into symbolic relationships before solving.",
+      "Match method to structure (equation, function behavior, rate, distribution).",
+      "Validate with domain, sign, and units before finalizing."
+    ],
+    terms: [
+      { term: "Domain", definition: "Set of input values for which an expression or function is defined." },
+      { term: "Constraint", definition: "Condition that limits valid values/solutions." },
+      { term: "Rate of Change", definition: "How one quantity changes relative to another." }
+    ],
+    processes: [
+      {
+        name: "General Solve Workflow",
+        steps: [
+          "Identify knowns, unknowns, and constraints.",
+          "Select method aligned to problem structure.",
+          "Execute algebra/calculus carefully.",
+          "Substitute/check and interpret result in context."
+        ]
+      }
+    ],
+    formulas: [
+      { expression: "m = (y2 - y1)/(x2 - x1)", meaning: "Slope / average rate of change." },
+      { expression: "x = (-b ± sqrt(b^2 - 4ac)) / (2a)", meaning: "Quadratic formula for ax^2 + bx + c = 0." }
+    ],
+    examples: [
+      "If a fee is fixed plus per-hour charge, write total cost as linear model C = fixed + rate·hours.",
+      "In optimization, compute derivative, find critical points, then use context constraints to pick valid extreme value."
+    ]
+  },
+  Science: {
+    concepts: [
+      "Scientific conclusions require claim + evidence + mechanism.",
+      "Reliable experiments separate manipulated, measured, and controlled variables.",
+      "Interpretation must include uncertainty and limitations."
+    ],
+    terms: [
+      { term: "Control Variable", definition: "Factor held constant to isolate effect of independent variable." },
+      { term: "Replication", definition: "Repeated trials to reduce random error and increase reliability." },
+      { term: "Causal Inference", definition: "Conclusion that one variable produces change in another." }
+    ],
+    processes: [
+      {
+        name: "CER Response Structure",
+        steps: [
+          "State the claim clearly.",
+          "Cite specific evidence (data/observation).",
+          "Explain mechanism linking evidence to claim.",
+          "Add uncertainty/limits statement."
+        ]
+      }
+    ],
+    formulas: [
+      { expression: "F = ma", meaning: "Net force equals mass times acceleration." },
+      { expression: "pH = -log[H+]", meaning: "Defines acidity from hydrogen ion concentration." }
+    ],
+    examples: [
+      "If ATP production drops after mitochondrial inhibitor is added, evidence supports mitochondria as ATP production site.",
+      "If temperature increases reaction rate, explain with collision frequency and activation energy threshold."
+    ]
+  },
+  "Social Studies": {
+    concepts: [
+      "Strong historical/policy answers require specific evidence and context.",
+      "Causal claims must explain mechanism, not just sequence of events.",
+      "Counterevidence should be addressed directly."
+    ],
+    terms: [
+      { term: "Primary Source", definition: "Evidence created in the period being studied." },
+      { term: "Contextualization", definition: "Placing an event or policy in broader historical/system setting." },
+      { term: "Causation", definition: "How and why one factor contributes to an outcome." }
+    ],
+    processes: [
+      {
+        name: "Document-Based Analysis",
+        steps: [
+          "Identify claim/prompt target.",
+          "Extract evidence from sources.",
+          "Evaluate source perspective/reliability.",
+          "Build causal argument with counterevidence response."
+        ]
+      }
+    ],
+    formulas: [],
+    examples: [
+      "Industrialization increased urban labor demand, which pulled rural populations into cities.",
+      "A constitutional claim is stronger when linked to exact clause plus precedent and consequence."
+    ]
+  },
+  English: {
+    concepts: [
+      "Analytical writing requires arguable thesis and evidence-driven reasoning.",
+      "Quote integration is only useful when followed by interpretation.",
+      "Organization and transitions control coherence under timed conditions."
+    ],
+    terms: [
+      { term: "Thesis", definition: "Central arguable claim that answers the prompt." },
+      { term: "Commentary", definition: "Reasoning that explains how evidence supports the claim." },
+      { term: "Rhetorical Device", definition: "Language choice used to create a specific audience effect." }
+    ],
+    processes: [
+      {
+        name: "Timed Analytical Paragraph",
+        steps: [
+          "Write a precise claim.",
+          "Insert one targeted quote/detail.",
+          "Explain effect/meaning in context.",
+          "Close with claim-linked interpretation."
+        ]
+      }
+    ],
+    formulas: [],
+    examples: [
+      "Instead of summarizing plot, explain how diction choices create tone and persuade audience.",
+      "Use transition language (however, therefore, consequently) to make logic explicit."
+    ]
+  },
+  "Foreign Language": {
+    concepts: [
+      "Meaning accuracy and grammar accuracy must both be correct.",
+      "Tense/mood choice depends on timeline and intent.",
+      "Register and cohesion matter in advanced writing/speaking tasks."
+    ],
+    terms: [
+      { term: "Agreement", definition: "Matching grammatical features (number/gender/person) across sentence elements." },
+      { term: "Register", definition: "Formality level appropriate to audience and context." },
+      { term: "Subjunctive", definition: "Mood used for doubt, emotion, recommendation, or non-factual situations." }
+    ],
+    processes: [
+      {
+        name: "Response Construction",
+        steps: [
+          "Determine intent and audience.",
+          "Choose tense/mood structure.",
+          "Draft with clear connectors.",
+          "Proof agreement and meaning alignment."
+        ]
+      }
+    ],
+    formulas: [],
+    examples: [
+      "If narrating completed past events, use past forms consistently with timeline markers.",
+      "In persuasive writing, transitions should show contrast/cause, not just list ideas."
+    ]
+  },
+  Technology: {
+    concepts: [
+      "Correctness comes before optimization.",
+      "Edge-case testing reveals hidden logic flaws.",
+      "Algorithm choices should be justified by constraints and scale."
+    ],
+    terms: [
+      { term: "Algorithm", definition: "Finite unambiguous steps for solving a problem." },
+      { term: "Edge Case", definition: "Boundary or unusual input that can break naive solutions." },
+      { term: "Time Complexity", definition: "How runtime grows as input size increases." }
+    ],
+    processes: [
+      {
+        name: "Implementation Validation",
+        steps: [
+          "Define input/output contract.",
+          "Trace nominal and boundary cases.",
+          "Run targeted tests.",
+          "Assess complexity against constraints."
+        ]
+      }
+    ],
+    formulas: [
+      { expression: "O(n), O(log n), O(n log n)", meaning: "Common runtime growth classes used in algorithm analysis." }
+    ],
+    examples: [
+      "Binary search is valid only on sorted data; otherwise results are unreliable.",
+      "A recursive method needs a base case and progress toward that base case."
+    ]
+  },
+  "SAT Prep": {
+    concepts: [
+      "Test accuracy comes from evidence-first elimination.",
+      "Pacing strategy matters as much as content knowledge.",
+      "Math reliability depends on unit/sign/domain checks."
+    ],
+    terms: [
+      { term: "Evidence Line", definition: "Exact text location that justifies an answer choice." },
+      { term: "Distractor", definition: "Plausible wrong option built around common mistakes." },
+      { term: "Pacing Checkpoint", definition: "Pre-set time marker used to stay on schedule." }
+    ],
+    processes: [
+      {
+        name: "SAT Question Workflow",
+        steps: [
+          "Classify question type.",
+          "Find required evidence/data first.",
+          "Eliminate choices with concrete contradiction.",
+          "Verify final pick with prompt scope."
+        ]
+      }
+    ],
+    formulas: [
+      { expression: "distance = rate × time", meaning: "Core applied relationship in SAT problem solving." }
+    ],
+    examples: [
+      "In reading, choose the answer directly supported by text, not the one that sounds generally true.",
+      "In math, isolate variable first, then test for extraneous solutions if operations changed domain."
+    ]
+  },
+  "ACT Prep": {
+    concepts: [
+      "High ACT scores require fast classification + precise elimination.",
+      "Data interpretation questions require reading axes/labels before inferring.",
+      "Skipping and returning is a valid strategy for pacing control."
+    ],
+    terms: [
+      { term: "Inference Question", definition: "Item requiring logical conclusion from provided evidence." },
+      { term: "Conflicting Viewpoints", definition: "ACT Science passage type comparing competing explanations." },
+      { term: "Time Box", definition: "Fixed time budget for a set of questions." }
+    ],
+    processes: [
+      {
+        name: "ACT Section Strategy",
+        steps: [
+          "Solve direct/easy items first.",
+          "Mark and skip time-heavy items.",
+          "Return with narrowed options.",
+          "Do final evidence check before submit."
+        ]
+      }
+    ],
+    formulas: [
+      { expression: "average rate = change / time", meaning: "Frequent ACT Math/Science relationship." }
+    ],
+    examples: [
+      "In ACT Science, a graph trend question should reference exact axis values, not visual guesswork.",
+      "In ACT English, preserve sentence meaning while correcting grammar and concision."
+    ]
+  }
 };
 
-const DOMAIN_TRAPS: Record<string, string[]> = {
-  Mathematics: [
-    "Solving correctly but not checking domain restrictions.",
-    "Using a familiar formula outside its assumptions.",
-    "Rounding too early and creating downstream error.",
-    "Stopping before interpreting units or context."
-  ],
-  Science: [
-    "Treating one result as universal without replication.",
-    "Confusing correlation with causation.",
-    "Ignoring sample bias or measurement error.",
-    "Overstating certainty from limited evidence."
-  ],
-  "Social Studies": [
-    "Using broad claims without concrete evidence.",
-    "Ignoring counterexamples that weaken the argument.",
-    "Projecting modern assumptions into past contexts.",
-    "Choosing narrative confidence over source quality."
-  ],
-  Technology: [
-    "Passing basic cases but failing edge cases.",
-    "Assuming code is correct without trace-based checks.",
-    "Ignoring complexity bottlenecks.",
-    "Confusing syntactic validity with algorithmic correctness."
-  ],
-  Languages: [
-    "Literal translation that breaks intended meaning.",
-    "Correct vocabulary with wrong register or tense.",
-    "Agreement errors in longer structures.",
-    "Weak cohesion from missing transitions."
-  ],
-  "Foreign Language": [
-    "Literal translation that breaks intended meaning.",
-    "Correct vocabulary with wrong register or tense.",
-    "Agreement errors in longer structures.",
-    "Weak cohesion from missing transitions."
-  ],
-  English: [
-    "Using summary when the prompt demands analysis.",
-    "Claiming without concrete textual evidence.",
-    "Weak reasoning links between quote and argument.",
-    "Grammar/syntax issues that reduce clarity."
-  ],
-  "SAT Prep": [
-    "Over-reading answer choices without checking the exact evidence line.",
-    "Doing long math when a shorter structure-based path exists.",
-    "Losing points on easy questions from pacing drift.",
-    "Ignoring unit, sign, or boundary conditions."
-  ],
-  "ACT Prep": [
-    "Spending too long on one question early in a section.",
-    "Choosing plausible answers not directly supported by data/text.",
-    "Skipping diagram/table labels during science/math items.",
-    "Failing to return to marked questions with fresh elimination."
-  ],
-  General: [
-    "Choosing first plausible option without comparison.",
-    "Skipping validation.",
-    "Ignoring assumptions.",
-    "No post-error review."
-  ]
-};
-
-const UNIT_REFERENCE: Array<{ match: string[]; notes: string[] }> = [
+const UNIT_OVERRIDES: Array<{ match: string[]; template: Partial<KnowledgeTemplate> }> = [
   {
-    match: ["linear equations"],
-    notes: [
-      "Standard form: ax + b = c; isolate variable with inverse operations.",
-      "Word problems: define variable first, then translate sentence-by-sentence.",
-      "Always check by substitution into original equation."
-    ]
+    match: ["cellular energetics", "photosynthesis", "cell structure"],
+    template: {
+      terms: [
+        { term: "ATP", definition: "Primary energy currency used by cells." },
+        { term: "Oxidative Phosphorylation", definition: "ATP-producing process in inner mitochondrial membrane." },
+        { term: "Chloroplast", definition: "Organelle where photosynthesis occurs in plants/algae." }
+      ],
+      formulas: [
+        { expression: "6CO2 + 6H2O + light -> C6H12O6 + 6O2", meaning: "Photosynthesis overall reaction." }
+      ]
+    }
   },
   {
-    match: ["linear inequalities"],
-    notes: [
-      "When multiplying/dividing by a negative, reverse inequality direction.",
-      "Use interval language and boundary inclusion correctly.",
-      "Validate with a test value in each region."
-    ]
+    match: ["stoichiometry", "equilibrium", "kinetics"],
+    template: {
+      formulas: [
+        { expression: "n = m / M", meaning: "Moles from mass and molar mass." },
+        { expression: "K = [products]^coeff / [reactants]^coeff", meaning: "Equilibrium constant expression." }
+      ]
+    }
   },
   {
-    match: ["systems of equations"],
-    notes: [
-      "Choose substitution for isolated forms; elimination for aligned coefficients.",
-      "After solving one variable, back-substitute and verify both equations.",
-      "Identify special cases: no solution or infinitely many solutions."
-    ]
+    match: ["mean value theorem", "fundamental theorem", "area between curves", "volume of solids"],
+    template: {
+      formulas: [
+        { expression: "f'(c) = (f(b)-f(a))/(b-a)", meaning: "Mean Value Theorem condition." },
+        { expression: "d/dx \int_a^x f(t)dt = f(x)", meaning: "FTC Part I." },
+        { expression: "Area = \int_a^b (top-bottom) dx", meaning: "Area between curves." }
+      ]
+    }
   },
   {
-    match: ["quadratic", "parabola"],
-    notes: [
-      "Use factoring, completing square, or quadratic formula based on structure.",
-      "Discriminant b^2 - 4ac classifies root behavior.",
-      "Vertex/axis form supports interpretation of maxima/minima."
-    ]
-  },
-  {
-    match: ["logarithm"],
-    notes: [
-      "Domain rule: log input must be strictly positive.",
-      "Convert between exponential and logarithmic forms fluently.",
-      "Apply product/quotient/power rules only when domain is valid."
-    ]
-  },
-  {
-    match: ["trigonometry", "polar", "parametric"],
-    notes: [
-      "Track angle units (radians vs degrees) consistently.",
-      "Use identities strategically, not mechanically.",
-      "Check periodicity and principal values in inverse trig contexts."
-    ]
-  },
-  {
-    match: ["limits", "continuity"],
-    notes: [
-      "Evaluate direct substitution first, then algebraic simplification if indeterminate.",
-      "Distinguish removable, jump, and infinite discontinuities.",
-      "One-sided limits determine overall limit existence."
-    ]
-  },
-  {
-    match: ["derivative"],
-    notes: [
-      "Derivative represents instantaneous rate of change and local slope.",
-      "Use product/quotient/chain rules with clean structure and parentheses.",
-      "Interpret sign of f' and f'' for monotonicity and concavity."
-    ]
-  },
-  {
-    match: ["integration", "area", "volume"],
-    notes: [
-      "Antiderivative + constant for indefinite integrals; bounds for definite integrals.",
-      "FTC links accumulation to derivative and net change.",
-      "For volume methods, define slices clearly and keep units cubic."
-    ]
-  },
-  {
-    match: ["inference", "chi-square", "regression", "probability"],
-    notes: [
-      "State hypotheses and conditions before calculation.",
-      "Interpret p-value/context rather than memorizing thresholds.",
-      "For regression, assess assumptions using residual behavior."
-    ]
-  },
-  {
-    match: ["cell", "genetics", "evolution", "ecology", "biology"],
-    notes: [
-      "Connect structure to function at molecular and system scales.",
-      "Explain mechanisms with evidence rather than isolated facts.",
-      "Use experimental design language: control, variable, replication."
-    ]
-  },
-  {
-    match: ["chem", "stoichiometry", "equilibrium", "kinetics", "thermodynamics", "electrochem"],
-    notes: [
-      "Track units and significant quantities every step.",
-      "Identify driving forces (energy, entropy, concentration, potential).",
-      "Separate equilibrium position from reaction rate logic."
-    ]
-  },
-  {
-    match: ["history", "civilization", "wars", "empire", "industrial"],
-    notes: [
-      "Frame periodization and causation before evidence selection.",
-      "Use primary/secondary sources with provenance checks.",
-      "Differentiate trigger events from long-run structural causes."
-    ]
-  },
-  {
-    match: ["government", "constitution", "policy", "federalism", "civil liberties"],
-    notes: [
-      "Identify institution powers and limits before evaluating outcomes.",
-      "Use constitutional principle + precedent + consequence structure.",
-      "Compare competing interpretations with explicit assumptions."
-    ]
-  },
-  {
-    match: ["economics", "market", "macro", "micro", "stabilization", "income", "financial"],
-    notes: [
-      "Use model assumptions explicitly (ceteris paribus, time horizon, openness).",
-      "Separate short-run from long-run effects and distributional impacts.",
-      "Track equilibrium shifts with labeled causal chains."
-    ]
-  },
-  {
-    match: ["computer", "recursion", "array", "sorting", "object", "inheritance", "logic"],
-    notes: [
-      "Reason with invariants and edge-case tests.",
-      "For recursion, define base case and measure progress toward it.",
-      "Justify data structure/algorithm choices using constraints."
-    ]
-  },
-  {
-    match: ["spanish", "syntax", "tense", "vocabulary", "literary"],
-    notes: [
-      "Choose tense/mood by communicative intent and timeframe.",
-      "Maintain agreement and register consistency.",
-      "Use transitions to strengthen coherence and interpretation."
-    ]
+    match: ["supply and demand", "market structures", "stabilization policies"],
+    template: {
+      terms: [
+        { term: "Equilibrium", definition: "Price/quantity where quantity demanded equals quantity supplied." },
+        { term: "Inflation", definition: "Sustained increase in general price level." },
+        { term: "Fiscal Policy", definition: "Government spending/tax actions affecting aggregate demand." }
+      ]
+    }
   }
 ];
 
@@ -320,99 +334,116 @@ function normalize(value: string): string {
   return value.trim().toLowerCase();
 }
 
-function stripLatex(text: string): string {
-  return text
-    .replace(/\$+/g, "")
-    .replace(/\\(frac|cdot|times|left|right|le|ge|neq|approx|to|rightarrow|implies)/g, "")
-    .replace(/[{}]/g, "")
-    .replace(/\\/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
+function getDomainDefaults(group: string): KnowledgeTemplate {
+  return DOMAIN_DEFAULTS[group] ?? DOMAIN_DEFAULTS["Social Studies"];
 }
 
-function getAnswerPreview(question: Question): string {
-  if (question.responseType === "input") {
-    if (typeof question.numericAnswer === "number") return `${question.numericAnswer}`;
-    if (question.acceptedAnswers && question.acceptedAnswers.length > 0) return question.acceptedAnswers[0];
+function applyUnitOverrides(subject: string, subtopic: string, base: KnowledgeTemplate): KnowledgeTemplate {
+  const key = `${normalize(subject)} ${normalize(subtopic)}`;
+  let concepts = [...base.concepts];
+  let terms = [...base.terms];
+  let processes = [...base.processes];
+  let formulas = [...base.formulas];
+  let examples = [...base.examples];
+
+  for (const override of UNIT_OVERRIDES) {
+    if (!override.match.some((m) => key.includes(m))) continue;
+    if (override.template.concepts) concepts = Array.from(new Set([...concepts, ...override.template.concepts]));
+    if (override.template.terms) {
+      const merged = [...terms, ...override.template.terms];
+      const seen = new Set<string>();
+      terms = merged.filter((t) => {
+        const id = normalize(t.term);
+        if (seen.has(id)) return false;
+        seen.add(id);
+        return true;
+      });
+    }
+    if (override.template.processes) processes = [...processes, ...override.template.processes];
+    if (override.template.formulas) {
+      const merged = [...formulas, ...override.template.formulas];
+      const seen = new Set<string>();
+      formulas = merged.filter((f) => {
+        const id = normalize(f.expression);
+        if (seen.has(id)) return false;
+        seen.add(id);
+        return true;
+      });
+    }
+    if (override.template.examples) examples = Array.from(new Set([...examples, ...override.template.examples]));
+  }
+
+  return { concepts, terms, processes, formulas, examples };
+}
+
+function answerForQuestion(q: Question): string {
+  if (q.responseType === "input") {
+    if (typeof q.numericAnswer === "number") return `${q.numericAnswer}`;
+    if (q.acceptedAnswers && q.acceptedAnswers.length > 0) return q.acceptedAnswers[0];
     return "Constructed response";
   }
-  return question.choices[question.answerIndex] ?? "See solution";
+  return q.choices[q.answerIndex] ?? "See explanation";
+}
+
+function enhanceExplanation(q: Question): string {
+  if (q.responseType === "input" || q.choices.length === 0) return q.explanation;
+  const incorrect = q.choices
+    .map((choice, index) => ({ choice, index }))
+    .filter((c) => c.index !== q.answerIndex)
+    .map((c) => c.choice)
+    .slice(0, 3);
+
+  const tail = incorrect.length > 0
+    ? ` The incorrect options are common confusions but do not satisfy the exact concept/condition tested.`
+    : "";
+
+  return `${q.explanation}${tail}`;
 }
 
 function pickWorkedExamples(pool: Question[]): WorkedExample[] {
-  const byDifficulty: Array<Question | undefined> = [
+  const byDifficulty = [
     pool.find((q) => q.difficulty === "easy"),
     pool.find((q) => q.difficulty === "medium"),
     pool.find((q) => q.difficulty === "hard")
-  ];
+  ].filter((q): q is Question => Boolean(q));
 
-  const seeded = byDifficulty.filter((q): q is Question => Boolean(q));
-  const fallback = pool.filter((q) => !seeded.some((s) => s.id === q.id)).slice(0, Math.max(0, 3 - seeded.length));
+  const fallback = pool.filter((q) => !byDifficulty.some((p) => p.id === q.id)).slice(0, Math.max(0, 4 - byDifficulty.length));
 
-  return [...seeded, ...fallback].slice(0, 3).map((q) => ({
+  return [...byDifficulty, ...fallback].slice(0, 4).map((q) => ({
     id: q.id,
     question: q.question,
-    solution: q.explanation,
     difficulty: q.difficulty,
-    answerPreview: getAnswerPreview(q)
+    correctAnswer: answerForQuestion(q),
+    explanation: enhanceExplanation(q)
   }));
 }
 
-function makeRetrievalDrills(subject: string, subtopic: string, examples: WorkedExample[]): RetrievalDrill[] {
+function buildRetrievalDrills(subject: string, subtopic: string, terms: KeyTerm[]): Array<{ prompt: string; answer: string }> {
   const unit = subtopic === "All Topics" ? `${subject} comprehensive review` : `${subject} - ${subtopic}`;
-  const drills: RetrievalDrill[] = [
+  const drills: Array<{ prompt: string; answer: string }> = [
     {
-      prompt: `In 2-3 sentences, define what mastery looks like in ${unit}.`,
-      answer: "Mastery means selecting the correct framework, executing accurately, and validating the result with constraints/evidence/context."
+      prompt: `Define the most important idea in ${unit} in one sentence.`,
+      answer: "A high-scoring answer states the concept precisely and includes the condition under which it applies."
     },
     {
-      prompt: `List 3 mistakes you must avoid in ${unit}.`,
-      answer: "Avoid assumption mismatch, skipped validation, and context-free final answers."
+      prompt: `Name one common error in ${unit} and how to prevent it.`,
+      answer: "Prevention should mention a concrete check (constraints, evidence alignment, grammar agreement, or edge-case test)."
     }
   ];
 
-  examples.slice(0, 2).forEach((example, idx) => {
+  terms.slice(0, 3).forEach((term) => {
     drills.push({
-      prompt: `Drill ${idx + 1}: Without looking, solve this prompt skeleton from memory: ${stripLatex(example.question).slice(0, 130)}...`,
-      answer: `Target result: ${stripLatex(example.answerPreview)}. Full method: ${stripLatex(example.solution)}`
+      prompt: `Recall drill: define '${term.term}' without notes.`,
+      answer: term.definition
     });
   });
 
   return drills;
 }
 
-function getMemorySheet(subject: string, subtopic: string, group: string): string[] {
-  const haystack = `${normalize(subject)} ${normalize(subtopic)}`;
-  const matched = UNIT_REFERENCE.filter((entry) => entry.match.some((key) => haystack.includes(key)));
-
-  if (matched.length === 0) {
-    if (group === "Mathematics") {
-      return [
-        "Write constraints first (domain, intervals, signs, units).",
-        "Keep symbolic steps clean; defer rounding.",
-        "Substitute back to verify validity."
-      ];
-    }
-    if (group === "Science") {
-      return [
-        "Use claim-evidence-reasoning structure.",
-        "Track variable roles and confounders.",
-        "State uncertainty and scope."
-      ];
-    }
-    return [
-      "Anchor claims to evidence.",
-      "Check assumptions before conclusions.",
-      "Use explicit reasoning links (because/therefore/however)."
-    ];
-  }
-
-  return Array.from(new Set(matched.flatMap((entry) => entry.notes))).slice(0, 6);
-}
-
 export function buildLearnPacket(subject: string, subtopic: string): LearnPacket {
   const group = getGroupNameForCourse(subject);
-  const titleUnit = subtopic === "All Topics" ? "Comprehensive Review" : subtopic;
+  const unitLabel = subtopic === "All Topics" ? "Comprehensive Review" : subtopic;
 
   const subjectPool = ACTIVE_QUESTION_BANK.filter((q) => normalize(q.subject) === normalize(subject));
   const scopedPool =
@@ -420,37 +451,35 @@ export function buildLearnPacket(subject: string, subtopic: string): LearnPacket
       ? subjectPool
       : subjectPool.filter((q) => normalize(q.subtopic) === normalize(subtopic));
 
-  const examplePool = scopedPool.length > 0 ? scopedPool : subjectPool;
-  const workedExamples = pickWorkedExamples(examplePool);
-  const retrievalDrills = makeRetrievalDrills(subject, subtopic, workedExamples);
+  const workingPool = scopedPool.length > 0 ? scopedPool : subjectPool;
+  const workedExamples = pickWorkedExamples(workingPool);
 
-  const keyIdeas = [
-    `Core objective: solve ${titleUnit} tasks with complete reasoning, not just final answers.`,
-    `Unit alignment: questions test method selection, execution quality, and interpretation in ${subject}.`,
-    `Scoring focus: correct setup + valid assumptions + verified conclusion.`
-  ];
+  const base = getDomainDefaults(group);
+  const withOverrides = applyUnitOverrides(subject, subtopic, base);
+
+  const studyGuide =
+    subtopic === "All Topics"
+      ? `This study guide covers the major tested concepts across all units in ${subject}. Use it to build conceptual fluency before timed practice.`
+      : `This study guide targets ${unitLabel} in ${subject}. Focus on concept accuracy, process execution, and exam-style error prevention.`;
 
   const studyPlan = [
-    "10 min: read memory sheet and restate each point in your own words.",
-    "20 min: work the 3 examples below step-by-step on paper, then compare to solutions.",
-    "10 min: complete retrieval drills without notes.",
-    "10 min: start a 5-10 question practice set and log every miss by error type."
+    "Phase 1 (10 min): read Key Concepts and Key Terms out loud.",
+    "Phase 2 (15 min): rehearse Core Processes step-by-step on a blank page.",
+    "Phase 3 (15 min): solve Worked Examples without looking at answers first.",
+    "Phase 4 (10 min): complete Retrieval Drills, then begin timed practice."
   ];
 
   return {
-    title: `${subject} • ${titleUnit}`,
-    unitLabel: titleUnit,
-    overview: DOMAIN_OVERVIEW[group] ?? DOMAIN_OVERVIEW.General,
-    examUse:
-      subtopic === "All Topics"
-        ? `Use this as your pre-test review room for all ${subject} units. Rotate through each unit after finishing the recall drills.`
-        : `Use this room to review ${titleUnit} deeply, then transition directly into timed practice for this same unit.`,
-    keyIdeas,
-    keySteps: DOMAIN_STEPS[group] ?? DOMAIN_STEPS.General,
-    memorySheet: getMemorySheet(subject, subtopic, group),
-    commonTraps: DOMAIN_TRAPS[group] ?? DOMAIN_TRAPS.General,
+    title: `${subject} • ${unitLabel}`,
+    unitLabel,
+    studyGuide,
+    keyConcepts: withOverrides.concepts.slice(0, 6),
+    keyTerms: withOverrides.terms.slice(0, 8),
+    coreProcesses: withOverrides.processes.slice(0, 3),
+    importantFormulas: withOverrides.formulas.slice(0, 8),
+    realExamples: withOverrides.examples.slice(0, 6),
     workedExamples,
-    retrievalDrills,
+    retrievalDrills: buildRetrievalDrills(subject, subtopic, withOverrides.terms),
     studyPlan
   };
 }
