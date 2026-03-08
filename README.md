@@ -1,150 +1,147 @@
 # PERSONA
 
-Voice-first AI conversations with simulated personas:
-- Albert Einstein
-- Steve Jobs
-- Napoleon
-- William Shakespeare
+Voice-first history learning app for hackathon demos.
 
-Built for fast local hackathon demos with free/open-source tooling only.
+PERSONA lets students talk with historical figures in real time, hear spoken replies, and explore major events through conversational context grounded in preloaded Britannica-style facts.
 
-## Tech Stack
+## What It Is
 
-- Next.js (App Router) + React + TypeScript
-- TailwindCSS + Framer Motion
-- Node route handlers
-- Ollama for local LLM
-- Piper for local neural TTS (primary)
-- ElevenLabs hosted TTS (optional, highest quality)
-- Browser Speech APIs (STT + fallback TTS)
-- Optional whisper.cpp local STT fallback
-- Optional Coqui XTTS local high-quality TTS mode
+- Fast, local-first web app built with Next.js + TypeScript.
+- History-focused persona conversations with distinct speaking styles.
+- Designed for live demos: responsive UI, streaming-like interaction flow, and graceful fallbacks when local services are down.
 
-## Quickstart (Under 10 Minutes)
+Current homepage personas:
+
+- Martin Luther King Jr.
+- Rosa Parks
+- Malcolm X
+- Frederick Douglass
+- Harriet Tubman
+- W. E. B. Du Bois
+- Thurgood Marshall
+- Katherine Johnson
+
+Note: older personas still exist in code for experimentation but are hidden from the main UI.
+
+## Core Stack
+
+- Next.js (App Router), React, TypeScript
+- TailwindCSS, Framer Motion
+- Node route handlers (`/api/chat`, `/api/tts`, `/api/stt`)
+- Ollama (local LLM)
+- Piper (local neural TTS, default)
+- Browser Web Speech API (primary STT)
+- Optional whisper.cpp endpoint (STT fallback)
+- Optional XTTS local mode
+- Optional ElevenLabs hosted TTS override
+
+## 10-Minute Local Setup
+
+1. Install dependencies:
 
 ```bash
 npm install
 cp .env.example .env.local
-npm run dev
 ```
 
-Open [http://localhost:9010](http://localhost:9010).
-
-## Local LLM Setup (Ollama)
+2. Start Ollama and pull a model:
 
 ```bash
 ollama serve
-ollama pull llama3.1:8b
-# If low resources:
-# ollama pull llama3.2:3b
+ollama pull llama3.2:3b
+# optional stronger model:
+# ollama pull llama3.1:8b
 ```
 
-Environment variables:
-- `OLLAMA_BASE_URL` (default: `http://localhost:11434`)
-- `OLLAMA_MODEL` (default: `llama3.2:3b`)
+3. Install Piper voices:
 
-## Local Voice Setup (Piper, Primary TTS)
-
-### macOS
+macOS:
 
 ```bash
 bash scripts/setup-piper-macos.sh
 ```
 
-### Linux
+Linux:
 
 ```bash
 bash scripts/setup-piper-linux.sh
 ```
 
-Both scripts install/download into `./voices/piper`.
-They now pull distinct persona voice models (Einstein, Jobs, Napoleon, Shakespeare) so voices are not identical.
-
-If you already installed Piper elsewhere, set:
-- `PIPER_BIN`
-- `PIPER_VOICES_DIR`
-- `PIPER_DEFAULT_VOICE_MODEL`
-
-## Optional: ElevenLabs TTS (fastest realistic voices)
-
-Add these to `.env.local`:
+4. Start the app:
 
 ```bash
-ELEVENLABS_API_KEY=...
-ELEVENLABS_MODEL=eleven_turbo_v2_5
-ELEVENLABS_OUTPUT_FORMAT=mp3_44100_128
+npm run dev
 ```
 
-Optional persona voice IDs:
+Open [http://localhost:9010](http://localhost:9010).
 
-```bash
-ELEVENLABS_VOICE_EINSTEIN=pNInz6obpgDQGcFmaJgB
-ELEVENLABS_VOICE_JOBS=TxGEqnHWrfWFTfGW9XjX
-ELEVENLABS_VOICE_NAPOLEON=VR6AewLTigWG4xSOukaG
-ELEVENLABS_VOICE_SHAKESPEARE=ErXwobaYiN019PkySvjV
-```
+## Voice Pipeline (Provider Order)
 
-When `ELEVENLABS_API_KEY` is set, `/api/tts` tries ElevenLabs first, then falls back to XTTS/Piper/browser.
+`/api/tts` tries providers in this order:
 
-### Optional High-Quality TTS (XTTS)
+1. ElevenLabs (only if `ELEVENLABS_API_KEY` is set)
+2. XTTS (if enabled via env/flag)
+3. Piper local neural TTS (default local path)
+4. Browser `SpeechSynthesis` fallback in client
 
-Install and run the free local XTTS API:
+This means the app still speaks even if premium or local servers fail.
 
-```bash
-bash scripts/setup-xtts-api.sh
-bash scripts/run-xtts-server.sh
-```
-
-Then set:
-
-```bash
-TTS_HIGH_QUALITY_MODE=xtts
-XTTS_AUTO_MODE=1
-XTTS_BASE_URL=http://127.0.0.1:8020
-```
-
-If XTTS fails, API automatically falls back to Piper.
-For low latency, keep `XTTS_AUTO_MODE=0` and only request XTTS explicitly.
-
-## STT Modes
+## STT Pipeline
 
 - Primary: browser Web Speech API (fast partial + final transcript)
-- Fallback: local `/api/stt` -> whisper.cpp server (`WHISPER_CPP_BASE_URL`)
+- Fallback: `/api/stt` wired to local `whisper.cpp` server
+
+## Key Environment Variables
+
+- `OLLAMA_BASE_URL` (default `http://localhost:11434`)
+- `OLLAMA_MODEL` (default `llama3.2:3b`)
+- `OLLAMA_MAX_TOKENS` (default `120`, increase for longer replies)
+- `OLLAMA_TIMEOUT_MS` (default `18000`)
+- `PIPER_BIN`, `PIPER_VOICES_DIR`, `PIPER_DEFAULT_VOICE_MODEL`
+- `WHISPER_CPP_BASE_URL`
+- `TTS_HIGH_QUALITY_MODE`, `XTTS_AUTO_MODE`, `XTTS_BASE_URL`
+- `ELEVENLABS_API_KEY` (optional)
 
 ## API Smoke Tests
 
-### Chat
+Chat:
 
 ```bash
 curl -X POST http://localhost:9010/api/chat \
   -H "Content-Type: application/json" \
   -d '{
-    "personaId":"einstein",
-    "message":"Explain relativity simply",
+    "personaId":"mlk",
+    "message":"Why did the March on Washington matter?",
     "history":[]
   }'
 ```
 
-### TTS
+TTS:
 
 ```bash
 curl -X POST http://localhost:9010/api/tts \
   -H "Content-Type: application/json" \
-  -d '{"personaId":"jobs","text":"Focus is saying no to a thousand things."}' \
+  -d '{"personaId":"douglass","text":"Literacy and freedom are deeply connected in abolition history."}' \
   --output persona-test.wav
 ```
 
-## Deployment Notes
+## Troubleshooting
 
-- Deployable as a standard Next.js app.
-- Works even when Ollama/Piper are down:
-  - Chat falls back to rule-based persona replies.
-  - Voice falls back to browser SpeechSynthesis.
+Port in use errors:
 
-## Ethics
+```bash
+lsof -i :9010
+kill -9 <PID>
+```
 
-All personas are clearly labeled as:
+Ollama already running (`11434 in use`) is normal: do not start a second instance.
 
-"Simulated persona inspired by historical/public style. Not the real person."
+If Piper is not found after setup, set `PIPER_BIN` in `.env.local` to the full binary path.
 
-The app avoids harmful/disallowed advice and does not claim real identity.
+## Product Framing
+
+PERSONA is built to make history more engaging for students through conversation, voice, and narrative context. It prioritizes:
+
+- Distinct persona realism
+- Fast demo reliability
+- Educational clarity over generic chatbot responses
