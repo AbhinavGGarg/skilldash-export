@@ -30,6 +30,8 @@ type OllamaChatResponse = {
 
 const OLLAMA_BASE_URL = process.env.OLLAMA_BASE_URL ?? "http://localhost:11434";
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL ?? "llama3.2:3b";
+const OLLAMA_MAX_TOKENS = Number(process.env.OLLAMA_MAX_TOKENS ?? "120");
+const OLLAMA_TIMEOUT_MS = Number(process.env.OLLAMA_TIMEOUT_MS ?? "18000");
 
 function getPersona(personaId?: string): Persona {
   if (!personaId || !(personaId in PERSONA_MAP)) {
@@ -226,9 +228,30 @@ function normalizeReply(reply: string) {
   return reply.replace(/\s+/g, " ").trim();
 }
 
+function ensureCompleteEnding(reply: string) {
+  const cleaned = normalizeReply(reply);
+  if (!cleaned) return "";
+
+  if (/[.!?]["')\]]?$/.test(cleaned)) {
+    return cleaned;
+  }
+
+  const lastBoundary = Math.max(
+    cleaned.lastIndexOf("."),
+    cleaned.lastIndexOf("!"),
+    cleaned.lastIndexOf("?"),
+  );
+
+  if (lastBoundary >= 30) {
+    return cleaned.slice(0, lastBoundary + 1).trim();
+  }
+
+  return `${cleaned}.`;
+}
+
 async function callOllama(messages: ConversationMessage[], temperature = 0.8) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 25_000);
+  const timeout = setTimeout(() => controller.abort(), OLLAMA_TIMEOUT_MS);
 
   try {
     const response = await fetch(`${OLLAMA_BASE_URL}/api/chat`, {
@@ -244,7 +267,7 @@ async function callOllama(messages: ConversationMessage[], temperature = 0.8) {
           temperature,
           top_p: 0.92,
           repeat_penalty: 1.06,
-          num_predict: 160,
+          num_predict: OLLAMA_MAX_TOKENS,
         },
       }),
       signal: controller.signal,
@@ -321,9 +344,9 @@ export async function POST(request: Request) {
       reply = fallbackReply(persona, userMessage);
     }
 
-    reply = normalizeReply(reply);
+    reply = ensureCompleteEnding(reply);
     if (!reply) {
-      reply = normalizeReply(fallbackReply(persona, userMessage));
+      reply = ensureCompleteEnding(fallbackReply(persona, userMessage));
       provider = "fallback";
     }
 
