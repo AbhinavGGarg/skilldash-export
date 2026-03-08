@@ -39,6 +39,9 @@ next-env.d.ts
 
 .genkit/*
 .env*
+.venv-xtts/
+voices/
+public/personas/*.tiff
 
 # firebase
 firebase-debug.log

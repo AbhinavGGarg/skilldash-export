@@ -1,14 +1,12 @@
-
-import type {Metadata} from 'next';
-import './globals.css';
-import { Navbar } from '@/components/layout/Navbar';
-import { FirebaseClientProvider } from '@/firebase';
-import { AiTutorWidget } from '@/components/AiTutorWidget';
-import 'katex/dist/katex.min.css';
+import type { Metadata } from "next";
+import "./globals.css";
+import { FirebaseClientProvider } from "@/firebase";
+import "katex/dist/katex.min.css";
 
 export const metadata: Metadata = {
-  title: 'SkillDash | Mini Practice Tests',
-  description: 'Quick, interactive practice for standardized tests.',
+  title: "PERSONA | Voice-First AI Personas",
+  description:
+    "Talk in real time with simulated personas like Einstein, Steve Jobs, Napoleon, and Shakespeare.",
 };
 
 export default function RootLayout({
@@ -21,15 +19,14 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      <body className="font-body antialiased bg-background text-foreground flex flex-col min-h-screen">
+      <body className="font-body min-h-screen bg-background text-foreground antialiased">
         <FirebaseClientProvider>
-          <Navbar />
-          <main className="flex-1">
-            {children}
-          </main>
-          <AiTutorWidget />
+          <main>{children}</main>
         </FirebaseClientProvider>
       </body>
     </html>
