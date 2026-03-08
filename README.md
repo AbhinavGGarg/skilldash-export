@@ -12,14 +12,15 @@ PERSONA lets students talk with historical figures in real time, hear spoken rep
 
 Current homepage personas:
 
+- Albert Einstein
+- Napoleon
+- Isaac Newton
+- George Washington
 - Martin Luther King Jr.
 - Rosa Parks
-- Malcolm X
 - Frederick Douglass
-- Harriet Tubman
-- W. E. B. Du Bois
-- Thurgood Marshall
 - Katherine Johnson
+- Marie Curie
 
 Note: older personas still exist in code for experimentation but are hidden from the main UI.
 

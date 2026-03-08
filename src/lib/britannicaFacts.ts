@@ -96,6 +96,17 @@ const BRITANNICA_BRIEFS: Partial<Record<PersonaId, BritannicaBrief>> = {
     ],
     source: "https://www.britannica.com/biography/Katherine-Johnson",
   },
+  washington: {
+    subject: "Early United States and Founding Era History",
+    historicalContext:
+      "Late 18th-century Atlantic world, when the American Revolution and constitutional experiments reshaped political institutions.",
+    funFacts: [
+      "George Washington served as commander in chief of the Continental Army during the American Revolution.",
+      "He became the first president of the United States in 1789 and set key executive precedents.",
+      "Washington voluntarily stepped down after two terms, helping establish the norm of peaceful transfer of power.",
+    ],
+    source: "https://www.britannica.com/biography/George-Washington",
+  },
   newton: {
     subject: "History of Physics: Classical Mechanics",
     historicalContext:

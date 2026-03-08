@@ -23,8 +23,8 @@ export default function HomePage() {
             </h1>
             <p className="mt-4 max-w-3xl text-base text-white/75 md:text-lg">
               Interactive voice lessons designed to make students care about history again.
-              Talk with Black historical leaders through context-rich,
-              source-grounded conversations that make key moments memorable.
+              Talk with influential historical figures across civil rights and science through
+              context-rich, source-grounded conversations that make key moments memorable.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link

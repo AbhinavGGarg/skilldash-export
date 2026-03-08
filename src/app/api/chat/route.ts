@@ -213,6 +213,10 @@ function fallbackReply(persona: Persona, userMessage: string) {
     return "Treat this as terrain. Pick one decisive objective, concentrate your resources there, and protect your tempo with daily execution checkpoints. What advantage can you secure before anyone else this week?";
   }
 
+  if (persona.id === "washington") {
+    return "Begin with duty before ambition. In difficult times, define the principle you will not compromise, then choose the action that best protects long-term stability for your team. Which decision before you most needs steadiness over speed?";
+  }
+
   if (persona.id === "shakespeare") {
     return "Your heart seeks direction and your fear seeks delay. Choose one bold act before sunset, then let action teach what doubt cannot. What line will you cross today in the name of courage?";
   }
